@@ -37,7 +37,7 @@ public class Project {
     @Column(length = 1000)
     private String shortDescription;
 
-    @Column(columnDefinition = "boolean default false")
+    @Column(nullable = false, columnDefinition = "boolean default false")
     private boolean hasDetailedPage;
 
     @Column(columnDefinition = "TEXT")
