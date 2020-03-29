@@ -1,0 +1,56 @@
+<configuration>
+
+	<appender name="ApplicationFileAppender"
+			  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>log/application.log</file>
+		<encoder
+				class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level
+				%logger{36}.%M - %msg%n</Pattern>
+		</encoder>
+		<rollingPolicy
+				class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>log/archived/application_%d{dd-MM-yyyy}.log
+			</fileNamePattern>
+			<maxHistory>10</maxHistory>
+			<totalSizeCap>100MB</totalSizeCap>
+		</rollingPolicy>
+	</appender>
+	<appender name="STDOUT"
+			  class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} %magenta([%thread])
+				%highlight(%-5level) %logger{36}.%M - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="org.springframework" level="ERROR"
+			additivity="false">
+		<appender-ref ref="ApplicationFileAppender" />
+	</logger>
+	<logger name="com.vinava" level="DEBUG" additivity="false">
+		<appender-ref ref="ApplicationFileAppender" />
+	</logger>
+	<logger name="org.springframework.web.client.RestTemplate"
+			level="TRACE" additivity="false">
+		<appender-ref ref="ApplicationFileAppender" />
+	</logger>
+
+	<logger name="org.hibernate" level="ERROR" additivity="false">
+		<appender-ref ref="ApplicationFileAppender" />
+	</logger>
+	<springProfile name="dev">
+		<root level="DEBUG,INFO">
+			<appender-ref ref="ApplicationFileAppender" />
+			<appender-ref ref="STDOUT" />
+		</root>
+		<root level="INFO">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
+	<springProfile name="prod,uat">
+		<root level="INFO">
+			<appender-ref ref="ApplicationFileAppender" />
+		</root>
+	</springProfile>
+</configuration>
