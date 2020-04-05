@@ -16,9 +16,10 @@ else
   docker build . -t pofo-app
   if [[ "$?" -ne 0 ]] ; then
     echo 'Docker image creation failed'
-    exit 1
+    exit 2
   fi
 
   echo "Launcing application pofo-app"
   java -jar -Dspring.profiles.active="$1" target/pofo-app.jar
 fi
+exit 0
