@@ -1,13 +1,8 @@
 FROM openjdk:8
-
 ARG profile=dev
-
-COPY ./src /opt/code/pofo/src
-COPY ./pom.xml  /opt/code/pofo/pom.xml
+COPY ./target/pofo-api.jar /opt/code/target/pofo-api.jar
 COPY ./startup.sh /opt/code/pofo/startup.sh
-WORKDIR /opt/code/pofo
-
-RUN mvn clean install -P$profile
-RUN rm -rf src
-
-CMD ["bash","startup.sh",$profile]
+RUN chmod +x /opt/code/pofo/startup.sh
+EXPOSE 5555
+ENTRYPOINT ["/opt/code/pofo/startup.sh"]
+CMD [$profile]
