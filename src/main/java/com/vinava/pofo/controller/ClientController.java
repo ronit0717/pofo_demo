@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/pofo/client")
 public class ClientController {
 
-    @GetMapping("get")
+    @GetMapping("test")
     private String clientTest() {
-        if(true){
+        if (true) {
             return "POFO APPLICATION IS UP!!!";
         }
         return "OOPS";
