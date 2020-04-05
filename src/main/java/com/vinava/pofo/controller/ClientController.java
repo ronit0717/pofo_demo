@@ -10,7 +10,10 @@ public class ClientController {
 
     @GetMapping("get")
     private String clientTest() {
-        return "POFO APPLICATION IS UP!!!";
+        if(true){
+            return "POFO APPLICATION IS UP!!!";
+        }
+        return "OOPS";
     }
 
 }
