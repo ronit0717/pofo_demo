@@ -25,6 +25,9 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(nullable = false)
+    private long clientId;
+
     private Long projectCategory;
 
     @NotBlank

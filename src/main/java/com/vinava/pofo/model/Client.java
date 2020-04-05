@@ -13,19 +13,20 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-@Table(name = "clients")
+@Table(name = "pofo_clients")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Client {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank
-    @Column(length = 15, nullable = false)
+    @Column(length = 15, nullable = false, unique = true)
     private String slug;
 
     @NotBlank
@@ -34,10 +35,10 @@ public class Client {
 
     private Long logoImageId;
 
-    @Column(length = 2048)
-    private String clientLink;
+    @Column(nullable = false, columnDefinition = "boolean default true")
+    private boolean active;
 
-    private Long clientCategoryId;
+    private Date subscriptionEndDate;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

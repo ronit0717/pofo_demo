@@ -13,30 +13,28 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-@Table(name = "project_categories")
+@Table(name = "product_attributes")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectCategory {
+public class ProductAttribute {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(nullable = false)
-    private long clientId;
-
-    private Long parentCategoryId;
+    private long productId;
 
     @NotBlank
-    @Column(length = 100, nullable = false)
-    private String name;
+    @Column(length = 200, nullable = false)
+    private String attributeKey;
 
-    private String description;
-
-    private Long imageId;
+    @NotBlank
+    @Column(length = 500, nullable = false)
+    private String attributeValue;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

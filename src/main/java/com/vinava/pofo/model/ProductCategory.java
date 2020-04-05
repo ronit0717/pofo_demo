@@ -13,13 +13,13 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-@Table(name = "partners")
+@Table(name = "product_categories")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Partner {
+public class ProductCategory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,17 +28,15 @@ public class Partner {
     @Column(nullable = false)
     private long clientId;
 
+    private Long parentCategoryId;
+
     @NotBlank
     @Column(length = 100, nullable = false)
     private String name;
 
-    private Long logoImageId;
-
-    @Column(length = 2048)
-    private String partnerLink;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
+
+    private Long imageId;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

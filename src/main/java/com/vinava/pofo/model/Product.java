@@ -1,6 +1,7 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vinava.pofo.enumeration.ProductType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,17 +10,16 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-@Table(name = "project_categories")
+@Table(name = "products")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectCategory {
+public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,15 +28,19 @@ public class ProjectCategory {
     @Column(nullable = false)
     private long clientId;
 
-    private Long parentCategoryId;
+    private Long productCategoryId;
 
-    @NotBlank
-    @Column(length = 100, nullable = false)
-    private String name;
+    @Enumerated(value = EnumType.STRING)
+    private ProductType productType;
 
+    private Double price;
+
+    private Double discountPercentage;
+
+    //private List<Long> productImageIds;
+
+    @Column(length = 2048)
     private String description;
-
-    private Long imageId;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
