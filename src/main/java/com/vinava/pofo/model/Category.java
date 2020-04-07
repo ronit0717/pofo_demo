@@ -1,6 +1,7 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vinava.pofo.enumeration.CategoryType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +14,13 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-@Table(name = "project_categories")
+@Table(name = "categories")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProjectCategory {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,13 +31,16 @@ public class ProjectCategory {
 
     private Long parentCategoryId;
 
+    @Enumerated(value = EnumType.STRING)
+    private CategoryType categoryType;
+
     @NotBlank
     @Column(length = 100, nullable = false)
     private String name;
 
-    private String description;
-
     private Long imageId;
+
+    private String description;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

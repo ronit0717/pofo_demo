@@ -35,7 +35,7 @@ public class Brand {
     private Long logoImageId;
 
     @Column(length = 2048)
-    private String partnerLink;
+    private String brandLink;
 
     @Column(columnDefinition = "TEXT")
     private String description;
