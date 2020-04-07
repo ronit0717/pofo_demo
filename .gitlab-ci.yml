@@ -1,9 +1,6 @@
 build-vinavaCloud:
   stage: build
   script:
-    - pwd
-    - cd /root/repository/pofo-api
-    - git pull
     - bash build.sh uat
 run-vinavaCloud:
   stage: deploy
