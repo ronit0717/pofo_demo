@@ -1,8 +1,7 @@
 #!/bin/bash
-echo "<<< Building application pofo api for environment : $1 >>>" 
-mvn clean install -P"$1" || exit 1
-echo "<<< Maven build successful.. doing docker build >>>"
+echo "<<< Deleting existing container pofo-api>>>"
+docker rm -f pofo-stage-api
+docker rmi pofo-api
+echo "<<< Doing docker build with profile: $1 >>>"
 docker build --build-arg profile="$1" . -t pofo-api || exit 1
-echo "<<< Docker image created successfully, creating docker container >>>"
-docker run -p 5555:5555 --name pofo-api --link vinavaMySQL:mysql -d pofo-api "$1" || exit 1
-docker "<<< Build process completed successfully >>>"
+echo "<<< Docker image created successfully.. run the docker now >>>"

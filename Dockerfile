@@ -1,8 +1,9 @@
-FROM openjdk:8
+FROM maven:3-jdk-8-openj9
 ARG profile=dev
-COPY ./target/pofo-api.jar /opt/code/target/pofo-api.jar
-COPY ./startup.sh /opt/code/pofo/startup.sh
-RUN chmod +x /opt/code/pofo/startup.sh
+ADD ./pom.xml pom.xml
+ADD ./src src
+ADD ./startup.sh startup.sh
+RUN chmod +x startup.sh
 EXPOSE 5555
-ENTRYPOINT ["/opt/code/pofo/startup.sh"]
+ENTRYPOINT ["/startup.sh"]
 CMD [$profile]
