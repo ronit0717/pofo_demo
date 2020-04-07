@@ -5,5 +5,5 @@ build-vinavaCloud:
 run-vinavaCloud:
   stage: deploy
   script:
-    - docker rm -f pofo-stage-api
+    - docker rm -f pofo-stage-api || true
     - docker run -d --restart=always --name pofo-stage-api --expose 5555 -e VIRTUAL_HOST=pofo-stage-api.vinavalabs.com -t pofo-api:latest uat
