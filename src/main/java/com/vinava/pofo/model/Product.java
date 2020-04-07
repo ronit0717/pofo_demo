@@ -10,7 +10,10 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -33,14 +36,21 @@ public class Product {
     @Enumerated(value = EnumType.STRING)
     private ProductType productType;
 
-    private Double price;
+    private BigDecimal price;
 
-    private Double discountPercentage;
+    private BigDecimal discountPercentage;
 
-    //private List<Long> productImageIds;
+    @ElementCollection
+    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "image_id")
+    private Set<Long> productImageIds = new HashSet<>();
 
     @Column(length = 2048)
     private String description;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "product_attributes", joinColumns = @JoinColumn(name = "product_id"))
+    private Set<ProductAttribute> productAttributes = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
