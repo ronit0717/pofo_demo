@@ -1,6 +1,5 @@
 #!/bin/bash
-echo "<<< Deleting existing container pofo-api>>>"
-docker rm -f pofo-stage-api
+echo "<<< Deleting existing image of pofo-api>>>"
 docker rmi pofo-api
 echo "<<< Doing docker build with profile: $1 >>>"
 docker build --build-arg profile="$1" . -t pofo-api || exit 1
