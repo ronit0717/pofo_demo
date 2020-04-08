@@ -1,4 +1,4 @@
-ip="$(docker inspect pofo-stage-api | grep IPAddress | tail -1 | grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b')"
+ip="$(docker inspect pofo-stage-api-new | grep IPAddress | tail -1 | grep -oE '\b([0-9]{1,3}\.){3}[0-9]{1,3}\b')"
 counter=0
 while ! curl -sf http://$ip:5555/pofo/client/test; do
   sleep 1

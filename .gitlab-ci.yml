@@ -1,3 +1,9 @@
+stages:
+  - build
+  - start
+  - check
+  - deploy
+  
 build-vinavaCloud:
   stage: build
   script:
@@ -6,16 +12,15 @@ build-vinavaCloud:
   only:
     - master
 
-run-vinavaCloud:
-  stage: deploy
+start-vinavaCloud:
+  stage: start
   script:
-    - docker rm -f pofo-stage-api || true
-    - docker run -d --restart=always --name pofo-stage-api --expose 5555 -e VIRTUAL_HOST=pofo-stage-api.vinavalabs.com -t pofo-api:latest uat
+    - docker run -d --restart=always --name pofo-stage-api-new --expose 5555 -e VIRTUAL_HOST=pofo-stage-api.vinavalabs.com -t pofo-api:latest uat
   only:
     - master
 
 check-vinavaCloud:
-  stage: .post
+  stage: check
   script:
     - docker tag pofo-api registry.gitlab.com/vinava/pofo/pofo-api:latest
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -23,4 +28,11 @@ check-vinavaCloud:
     - bash checkUp.sh
   only:
     - master
-    
+
+deploy-vinavaCloud:
+  stage: deploy
+  script:
+    - docker rm -f pofo-stage-api || true
+    - docker rename pofo-stage-api-new pofo-stage-api
+  only:
+    - master
