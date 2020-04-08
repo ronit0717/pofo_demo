@@ -39,7 +39,7 @@
 	<logger name="org.hibernate" level="ERROR" additivity="false">
 		<appender-ref ref="ApplicationFileAppender" />
 	</logger>
-	<springProfile name="dev,uat">
+	<springProfile name="dev">
 		<root level="DEBUG,INFO">
 			<appender-ref ref="ApplicationFileAppender" />
 			<appender-ref ref="STDOUT" />
@@ -48,7 +48,7 @@
 			<appender-ref ref="STDOUT" />
 		</root>
 	</springProfile>
-	<springProfile name="prod">
+	<springProfile name="prod, uat">
 		<root level="INFO">
 			<appender-ref ref="ApplicationFileAppender" />
 		</root>
