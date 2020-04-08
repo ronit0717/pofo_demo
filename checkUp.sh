@@ -6,7 +6,7 @@ while ! curl -sf http://$ip:5555/pofo/client/test; do
   counter=$((counter+1))
   if [[ "$counter" -gt 420 ]]; then
        echo "Waited for 7 minutes; terminating Server"
-       docker rm -f pofo-stage-api
+       docker rm -f pofo-stage-api-new
        exit 1
   fi
 done
