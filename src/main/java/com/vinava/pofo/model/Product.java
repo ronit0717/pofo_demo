@@ -2,6 +2,7 @@ package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vinava.pofo.enumeration.ProductType;
+import com.vinava.pofo.model.embed.ProductAttribute;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

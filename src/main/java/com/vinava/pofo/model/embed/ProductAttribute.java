@@ -1,4 +1,4 @@
-package com.vinava.pofo.model;
+package com.vinava.pofo.model.embed;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
