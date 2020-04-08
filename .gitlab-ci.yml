@@ -3,7 +3,7 @@ stages:
   - start
   - check
   - deploy
-  
+
 build-vinavaCloud:
   stage: build
   script:
@@ -15,6 +15,7 @@ build-vinavaCloud:
 start-vinavaCloud:
   stage: start
   script:
+    - docker rm -f pofo-stage-api-new || true
     - docker run -d --restart=always --name pofo-stage-api-new --expose 5555 -e VIRTUAL_HOST=pofo-stage-api.vinavalabs.com -t pofo-api:latest uat
   only:
     - master
