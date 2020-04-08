@@ -1,7 +1,10 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vinava.pofo.dto.Address;
+import com.vinava.pofo.dto.ContactDetail;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -19,6 +22,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Client {
 
     @Id
@@ -30,7 +34,7 @@ public class Client {
     private String slug;
 
     @NotBlank
-    @Column(length = 200, nullable = false)
+    @Column(length = 100, nullable = false)
     private String name;
 
     private Long logoImageId;
@@ -39,6 +43,15 @@ public class Client {
     private boolean active;
 
     private Date subscriptionEndDate;
+
+    @Embedded
+    private Address address;
+
+    @Embedded
+    private ContactDetail contactDetail;
+
+    @Column(length = 15)
+    private String gstin;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
