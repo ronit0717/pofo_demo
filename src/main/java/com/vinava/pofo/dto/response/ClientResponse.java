@@ -64,7 +64,6 @@ public class ClientResponse {
 
             return ResponseEntity.ok()
                     .headers(headers)
-                    .contentLength(clientResponses.size())
                     .body(clientResponses);
         } catch (Exception e) {
             log.error("In exception block of getResponseEntityFrom for list of clients: {}", clients, e);
