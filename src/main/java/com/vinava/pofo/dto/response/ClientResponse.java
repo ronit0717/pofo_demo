@@ -61,6 +61,7 @@ public class ClientResponse {
             List<ClientResponse> clientResponses = from(clients);
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Total-Count", String.valueOf(clientResponses.size()));
+            headers.add("Access-Control-Expose-Headers", "X-Total-Count");
 
             return ResponseEntity.ok()
                     .headers(headers)
