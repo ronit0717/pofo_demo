@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -71,25 +72,26 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<ClientResponse> getClientsByName(String clientName, Integer pageNumber, Integer pageSize, String sortBy, String order) {
+    public ResponseEntity<List<ClientResponse>> getClientsByName
+            (String clientName, Integer pageNumber, Integer pageSize, String sortBy, String order) {
         log.debug("Starting getClients for clientName: {}, pageNumber: {}, pageSize: {}, sortBy: {} and order: {}",
                 clientName, pageNumber, pageSize, sortBy, order);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
         List<Client> clients = clientRepository.findAllByName(clientName, pageable);
         log.debug("Returning from getClientsByName with client response: {}", clients);
-        return ClientResponse.from(clients);
+        return ClientResponse.getResponseEntityFrom(clients);
     }
 
     @Override
-    public List<ClientResponse> getAllClients(Integer pageNumber, Integer pageSize, String sortBy, String order) {
+    public ResponseEntity<List<ClientResponse>> getAllClients(Integer pageNumber, Integer pageSize, String sortBy, String order) {
         log.debug("Starting getAllClients with pageNumber: {}, pageSize: {}, sortBy: {} and order: {}",
                 pageNumber, pageSize, sortBy, order);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
         Page<Client> clients = clientRepository.findAll(pageable);
         log.debug("Returning from getAllClients with client response: {}", clients);
-        return ClientResponse.from(clients.getContent());
+        return ClientResponse.getResponseEntityFrom(clients.getContent());
     }
 
     @Override
