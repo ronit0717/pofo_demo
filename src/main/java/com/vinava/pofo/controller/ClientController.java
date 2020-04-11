@@ -8,7 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
@@ -34,7 +35,7 @@ public class ClientController {
     }
 
     @DeleteMapping("delete/{id}")
-    private boolean deleteClient(@PathParam(value = "id") long id) {
+    private boolean deleteClient(@NotNull @PathVariable(value = "id") long id) {
         return clientService.deleteClient(id);
     }
 
@@ -44,24 +45,24 @@ public class ClientController {
     }
 
     @GetMapping("get/{slug}")
-    private ClientResponse getClientBySlug(@PathParam(value = "slug") String slug) {
+    private ClientResponse getClientBySlug(@NotBlank @PathVariable(value = "slug") String slug) {
         return clientService.getClientBySlug(slug);
     }
 
     @GetMapping("get/name")
     public ResponseEntity<List<ClientResponse>> getClientsByName(@RequestParam(value = "name") String clientName,
-                                                                 @RequestParam(value = "page_number", defaultValue = "0") Integer pageNumber,
-                                                                 @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize,
-                                                                 @RequestParam(value = "sort_by", defaultValue = "id") String sortBy,
-                                                                 @RequestParam(value = "order", defaultValue = "DESC") String order) {
+                                                                 @RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+                                                                 @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
+                                                                 @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
+                                                                 @RequestParam(value = "_order", defaultValue = "DESC") String order) {
         return clientService.getClientsByName(clientName, pageNumber, pageSize, sortBy, order);
     }
 
     @GetMapping("get/all")
-    public ResponseEntity<List<ClientResponse>> getAllClients(@RequestParam(value = "page_number", defaultValue = "0") Integer pageNumber,
-                                                 @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize,
-                                                 @RequestParam(value = "sort_by", defaultValue = "id") String sortBy,
-                                                 @RequestParam(value = "order", defaultValue = "DESC") String order) {
+    public ResponseEntity<List<ClientResponse>> getAllClients(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+                                                 @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
+                                                 @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
+                                                 @RequestParam(value = "_order", defaultValue = "DESC") String order) {
         return clientService.getAllClients(pageNumber, pageSize, sortBy, order);
     }
 

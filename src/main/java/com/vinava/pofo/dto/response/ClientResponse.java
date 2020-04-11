@@ -1,5 +1,6 @@
 package com.vinava.pofo.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vinava.pofo.dto.Address;
 import com.vinava.pofo.dto.ContactDetail;
 import com.vinava.pofo.model.Client;
@@ -22,15 +23,26 @@ import java.util.List;
 @Slf4j
 public class ClientResponse {
 
+    @JsonProperty("pofoId")
     private Long id;
+
     private String name;
+
+    @JsonProperty("id")
     private String slug;
+
     private boolean active;
+
     private boolean userExists;
+
     private Long logoImageId;
+
     private Date subscriptionEndDate;
+
     private String gstin;
+
     private Address address;
+
     private ContactDetail contactDetail;
 
     public static ClientResponse from(Client client, boolean newUser) {
