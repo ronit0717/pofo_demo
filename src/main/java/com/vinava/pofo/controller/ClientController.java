@@ -50,10 +50,10 @@ public class ClientController {
 
     @GetMapping("get/name")
     public ResponseEntity<List<ClientResponse>> getClientsByName(@RequestParam(value = "name") String clientName,
-                                                           @RequestParam(value = "page_number", defaultValue = "0") Integer pageNumber,
-                                                           @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize,
-                                                           @RequestParam(value = "sort_by", defaultValue = "id") String sortBy,
-                                                           @RequestParam(value = "order", defaultValue = "DESC") String order) {
+                                                                 @RequestParam(value = "page_number", defaultValue = "0") Integer pageNumber,
+                                                                 @RequestParam(value = "page_size", defaultValue = "10") Integer pageSize,
+                                                                 @RequestParam(value = "sort_by", defaultValue = "id") String sortBy,
+                                                                 @RequestParam(value = "order", defaultValue = "DESC") String order) {
         return clientService.getClientsByName(clientName, pageNumber, pageSize, sortBy, order);
     }
 
