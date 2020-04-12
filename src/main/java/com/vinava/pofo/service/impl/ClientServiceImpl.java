@@ -119,11 +119,23 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public boolean deleteClient(long id) {
+    public boolean deleteClientById(long id) {
         log.debug("Deleting client with id: {}", id);
         Optional<Client> optionalClient = clientRepository.findById(id);
         if (!optionalClient.isPresent()) {
             log.error("Client not present with id: {}", id);
+            return false;
+        }
+        clientRepository.delete(optionalClient.get());
+        return true;
+    }
+
+    @Override
+    public boolean deleteClientBySlug(String slug) {
+        log.debug("Deleting client with slug: {}", slug);
+        Optional<Client> optionalClient = clientRepository.findBySlug(slug);
+        if (!optionalClient.isPresent()) {
+            log.error("Client not present with slug: {}", slug);
             return false;
         }
         clientRepository.delete(optionalClient.get());

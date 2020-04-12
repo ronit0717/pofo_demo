@@ -15,5 +15,6 @@ public interface ClientService {
     ClientResponse getClientById(Long id);
     ClientResponse getClientBySlug(String slug);
     ResponseEntity<List<ClientResponse>> getAllClients(Integer pageNumber, Integer pageSize, String sortBy, String order);
-    boolean deleteClient(long id);
+    boolean deleteClientById(long id);
+    boolean deleteClientBySlug(String slug);
 }
