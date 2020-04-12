@@ -57,15 +57,19 @@ public class ClientServiceImpl implements ClientService {
             throw new ResourceNotFoundException("Client", "id", clientRequest.getId());
         }
         Client client = clientOptional.get();
+        boolean nameUpdate = !(clientRequest.getName().equals(client.getName()));
+        log.debug("Name update: {}", nameUpdate);
         client = clientRequest.updateClientFrom(client);
-        clientOptional = clientRepository.
-                findByNameAndAddressPincode(client.getName(), client.getAddress().getPincode());
-        if (clientOptional.isPresent()) {
-            log.error("Client already present with name : {} and pincode: {}",
-                    clientRequest.getName(), clientRequest.getAddress().getPincode());
-            String errorMessage = String.format("Client already present with name %s and with pincode %s",
-                    clientRequest.getName(), clientRequest.getAddress().getPincode());
-            throw new ProcessException("Update client", errorMessage);
+        if (nameUpdate) {
+            clientOptional = clientRepository.
+                    findByNameAndAddressPincode(client.getName(), client.getAddress().getPincode());
+            if (clientOptional.isPresent()) {
+                log.error("Client already present with name : {} and pincode: {}",
+                        clientRequest.getName(), clientRequest.getAddress().getPincode());
+                String errorMessage = String.format("Client already present with name %s and with pincode %s",
+                        clientRequest.getName(), clientRequest.getAddress().getPincode());
+                throw new ProcessException("Update client", errorMessage);
+            }
         }
         client = clientRepository.save(client);
         return ClientResponse.from(client, false);
