@@ -24,28 +24,33 @@ public class ClientController {
             return "POFO APPLICATION IS UP!!!";
     }
 
-    @PostMapping("create")
+    @PostMapping()
     private ClientResponse createClient(@Valid @RequestBody ClientRequest request) {
         return clientService.createClient(request);
     }
 
-    @PostMapping("update")
+    @PutMapping()
     private ClientResponse updateClient(@Valid @RequestBody ClientRequest request) {
         return clientService.updateClient(request);
     }
 
     @DeleteMapping("delete/{id}")
-    private boolean deleteClient(@NotNull @PathVariable(value = "id") long id) {
-        return clientService.deleteClient(id);
+    private boolean deleteClientById(@NotNull @PathVariable(value = "id") long id) {
+        return clientService.deleteClientById(id);
     }
 
-    @GetMapping("get")
-    private ClientResponse getClientById(@RequestParam long id) {
+    @DeleteMapping("delete")
+    private boolean deleteClientBySlug(@NotNull @RequestParam(value = "slug") String slug) {
+        return clientService.deleteClientBySlug(slug);
+    }
+
+    @GetMapping("get/{id}")
+    private ClientResponse getClientById(@PathVariable long id) {
         return clientService.getClientById(id);
     }
 
-    @GetMapping("get/{slug}")
-    private ClientResponse getClientBySlug(@NotBlank @PathVariable(value = "slug") String slug) {
+    @GetMapping("get")
+    private ClientResponse getClientBySlug(@NotBlank @RequestParam(value = "slug") String slug) {
         return clientService.getClientBySlug(slug);
     }
 
@@ -58,7 +63,7 @@ public class ClientController {
         return clientService.getClientsByName(clientName, pageNumber, pageSize, sortBy, order);
     }
 
-    @GetMapping("get/all")
+    @GetMapping()
     public ResponseEntity<List<ClientResponse>> getAllClients(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                  @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                  @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
