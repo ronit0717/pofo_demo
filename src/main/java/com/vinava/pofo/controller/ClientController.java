@@ -34,27 +34,27 @@ public class ClientController {
         return clientService.updateClient(request);
     }
 
-    @DeleteMapping("delete/{id}")
+    @DeleteMapping("{id}")
     private boolean deleteClientById(@NotNull @PathVariable(value = "id") long id) {
         return clientService.deleteClientById(id);
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping()
     private boolean deleteClientBySlug(@NotNull @RequestParam(value = "slug") String slug) {
         return clientService.deleteClientBySlug(slug);
     }
 
-    @GetMapping("get/{id}")
+    @GetMapping("{id}")
     private ClientResponse getClientById(@PathVariable long id) {
         return clientService.getClientById(id);
     }
 
-    @GetMapping("get")
-    private ClientResponse getClientBySlug(@NotBlank @RequestParam(value = "slug") String slug) {
+    @GetMapping("slug/{slug}")
+    private ClientResponse getClientBySlug(@NotBlank @PathVariable(value = "slug") String slug) {
         return clientService.getClientBySlug(slug);
     }
 
-    @GetMapping("get/name")
+    @GetMapping("name")
     public ResponseEntity<List<ClientResponse>> getClientsByName(@RequestParam(value = "name") String clientName,
                                                                  @RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                                  @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
