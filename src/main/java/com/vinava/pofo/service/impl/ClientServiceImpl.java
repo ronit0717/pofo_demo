@@ -49,12 +49,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponse updateClient(ClientRequest clientRequest) throws ResourceNotFoundException, ProcessException {
-        log.debug("Updating client with id: {}", clientRequest.getId());
-        Optional<Client> clientOptional = clientRepository.findById(clientRequest.getId());
+    public ClientResponse updateClient(long id, ClientRequest clientRequest) throws ResourceNotFoundException, ProcessException {
+        log.debug("Updating client with id: {}", id);
+        Optional<Client> clientOptional = clientRepository.findById(id);
         if (!clientOptional.isPresent()) {
-            log.error("No client found with id: {}", clientRequest.getId());
-            throw new ResourceNotFoundException("Client", "id", clientRequest.getId());
+            log.error("No client found with id: {}", id);
+            throw new ResourceNotFoundException("Client", "id", id);
         }
         Client client = clientOptional.get();
         boolean nameUpdate = !(clientRequest.getName().equals(client.getName()));

@@ -14,8 +14,6 @@ import java.util.Date;
 @Builder
 public class ClientRequest {
 
-    private Long id;
-
     @NotBlank
     @Size(max = 100, message = "Client name should be of maximum length of 100")
     private String name;
