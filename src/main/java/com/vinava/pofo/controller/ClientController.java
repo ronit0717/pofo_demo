@@ -29,9 +29,10 @@ public class ClientController {
         return clientService.createClient(request);
     }
 
-    @PutMapping()
-    private ClientResponse updateClient(@Valid @RequestBody ClientRequest request) {
-        return clientService.updateClient(request);
+    @PutMapping("{id}")
+    private ClientResponse updateClient(@Valid @RequestBody ClientRequest request,
+                                        @PathVariable(value = "id") long id) {
+        return clientService.updateClient(id, request);
     }
 
     @DeleteMapping("{id}")
