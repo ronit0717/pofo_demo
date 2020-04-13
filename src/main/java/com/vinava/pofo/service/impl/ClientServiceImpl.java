@@ -9,6 +9,7 @@ import com.vinava.pofo.model.Client;
 import com.vinava.pofo.service.ClientService;
 import com.vinava.pofo.service.helper.SlugGenerationService;
 import com.vinava.pofo.util.ConstantUtil;
+import com.vinava.pofo.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -35,13 +36,18 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse createClient(ClientRequest clientRequest) {
         log.debug("Starting createClient with request: {}", clientRequest);
         Optional<Client> clientOptional = clientRepository.
-                findByNameAndAddressPincode(clientRequest.getName(), clientRequest.getAddress().getPincode());
+                findByNameAndAddressPincodeAndClientType(clientRequest.getName(),
+                                                        clientRequest.getAddress().getPincode(),
+                                                        clientRequest.getClientType());
         if (clientOptional.isPresent()) {
-            log.debug("Client already present with name : {} and pincode: {}",
-                    clientRequest.getName(), clientRequest.getAddress().getPincode());
+            log.debug("Client already present with name : {} and pincode: {} and of clientType: {}",
+                    clientRequest.getName(), clientRequest.getAddress().getPincode(), clientRequest.getClientType().name());
             return ClientResponse.from(clientOptional.get(), false);
         }
         Client client = clientRequest.from();
+        if (client.isActive()) {
+            client.setActivationDate(DateUtil.getCurrentDate());
+        }
         client.setSlug(generateClientSlug(clientRequest.getName()));
         client = clientRepository.saveAndFlush(client);
         log.debug("Returning from createClient, response: {}", client);
@@ -57,17 +63,20 @@ public class ClientServiceImpl implements ClientService {
             throw new ResourceNotFoundException("Client", "id", id);
         }
         Client client = clientOptional.get();
-        boolean nameUpdate = !(clientRequest.getName().equals(client.getName()));
-        log.debug("Name update: {}", nameUpdate);
+        boolean criticalUpdate = !(clientRequest.getName().equals(client.getName())
+                                && clientRequest.getAddress().getPincode().equals(client.getAddress().getPincode())
+                                && clientRequest.getClientType().equals(client.getClientType()));
+        log.debug("Critical update: {}", criticalUpdate);
         client = clientRequest.updateClientFrom(client);
-        if (nameUpdate) {
+        if (criticalUpdate) {
             clientOptional = clientRepository.
-                    findByNameAndAddressPincode(client.getName(), client.getAddress().getPincode());
+                    findByNameAndAddressPincodeAndClientType(client.getName(),
+                            client.getAddress().getPincode(), client.getClientType());
             if (clientOptional.isPresent()) {
-                log.error("Client already present with name : {} and pincode: {}",
-                        clientRequest.getName(), clientRequest.getAddress().getPincode());
-                String errorMessage = String.format("Client already present with name %s and with pincode %s",
-                        clientRequest.getName(), clientRequest.getAddress().getPincode());
+                log.error("Client already present with name : {}, pincode: {}, clientType: {}",
+                        clientRequest.getName(), clientRequest.getAddress().getPincode(), clientRequest.getClientType());
+                String errorMessage = String.format("Client already present with name %s , pincode %s and clientType %s",
+                        clientRequest.getName(), clientRequest.getAddress().getPincode(), clientRequest.getClientType().name());
                 throw new ProcessException("Update client", errorMessage);
             }
         }
