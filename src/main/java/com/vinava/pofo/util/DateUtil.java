@@ -34,7 +34,19 @@ public class DateUtil {
         return calendar;
     }
 
-    private static Date getCurrentDate() {
+    public static Long getDayDifferent(Date date1, Date date2) {
+        if (date1 == null || date2 == null) {
+            return null;
+        }
+        long diff = Math.abs(date1.getTime() - date2.getTime());
+        long diffInDays = diff / (24 * 60 * 60 * 1000);
+        if (diffInDays == 0) {
+            return null;
+        }
+        return diffInDays;
+    }
+
+    public static Date getCurrentDate() {
         return new Date();
     }
 

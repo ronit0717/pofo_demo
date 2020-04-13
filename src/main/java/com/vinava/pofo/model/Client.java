@@ -3,6 +3,7 @@ package com.vinava.pofo.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vinava.pofo.dto.Address;
 import com.vinava.pofo.dto.ContactDetail;
+import com.vinava.pofo.enumeration.ClientType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -52,6 +53,11 @@ public class Client {
 
     @Column(length = 15)
     private String gstin;
+
+    private Date activationDate;
+
+    @Enumerated(value = EnumType.STRING)
+    private ClientType clientType;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
