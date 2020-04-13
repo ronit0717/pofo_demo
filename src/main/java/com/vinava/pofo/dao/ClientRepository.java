@@ -1,5 +1,6 @@
 package com.vinava.pofo.dao;
 
+import com.vinava.pofo.enumeration.ClientType;
 import com.vinava.pofo.model.Client;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,5 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findBySlug(String slug);
     List<Client> findAllByName(String clientName, Pageable pageable);
-    Optional<Client> findByNameAndAddressPincode(String name, String pincode);
+    Optional<Client> findByNameAndAddressPincodeAndClientType(String name, String pincode, ClientType clientType);
 }

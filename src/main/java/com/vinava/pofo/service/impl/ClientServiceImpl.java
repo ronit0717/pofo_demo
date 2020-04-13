@@ -9,12 +9,14 @@ import com.vinava.pofo.model.Client;
 import com.vinava.pofo.service.ClientService;
 import com.vinava.pofo.service.helper.SlugGenerationService;
 import com.vinava.pofo.util.ConstantUtil;
+import com.vinava.pofo.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,13 +36,18 @@ public class ClientServiceImpl implements ClientService {
     public ClientResponse createClient(ClientRequest clientRequest) {
         log.debug("Starting createClient with request: {}", clientRequest);
         Optional<Client> clientOptional = clientRepository.
-                findByNameAndAddressPincode(clientRequest.getName(), clientRequest.getAddress().getPincode());
+                findByNameAndAddressPincodeAndClientType(clientRequest.getName(),
+                                                        clientRequest.getAddress().getPincode(),
+                                                        clientRequest.getClientType());
         if (clientOptional.isPresent()) {
-            log.debug("Client already present with name : {} and pincode: {}",
-                    clientRequest.getName(), clientRequest.getAddress().getPincode());
+            log.debug("Client already present with name : {} and pincode: {} and of clientType: {}",
+                    clientRequest.getName(), clientRequest.getAddress().getPincode(), clientRequest.getClientType().name());
             return ClientResponse.from(clientOptional.get(), false);
         }
         Client client = clientRequest.from();
+        if (client.isActive()) {
+            client.setActivationDate(DateUtil.getCurrentDate());
+        }
         client.setSlug(generateClientSlug(clientRequest.getName()));
         client = clientRepository.saveAndFlush(client);
         log.debug("Returning from createClient, response: {}", client);
@@ -48,48 +55,56 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponse updateClient(ClientRequest clientRequest) throws ResourceNotFoundException, ProcessException {
-        log.debug("Updating client with id: {}", clientRequest.getId());
-        Optional<Client> clientOptional = clientRepository.findById(clientRequest.getId());
+    public ClientResponse updateClient(long id, ClientRequest clientRequest) throws ResourceNotFoundException, ProcessException {
+        log.debug("Updating client with id: {}", id);
+        Optional<Client> clientOptional = clientRepository.findById(id);
         if (!clientOptional.isPresent()) {
-            log.error("No client found with id: {}", clientRequest.getId());
-            throw new ResourceNotFoundException("Client", "id", clientRequest.getId());
+            log.error("No client found with id: {}", id);
+            throw new ResourceNotFoundException("Client", "id", id);
         }
         Client client = clientOptional.get();
+        boolean criticalUpdate = !(clientRequest.getName().equals(client.getName())
+                                && clientRequest.getAddress().getPincode().equals(client.getAddress().getPincode())
+                                && clientRequest.getClientType().equals(client.getClientType()));
+        log.debug("Critical update: {}", criticalUpdate);
         client = clientRequest.updateClientFrom(client);
-        clientOptional = clientRepository.
-                findByNameAndAddressPincode(client.getName(), client.getAddress().getPincode());
-        if (clientOptional.isPresent()) {
-            log.error("Client already present with name : {} and pincode: {}",
-                    clientRequest.getName(), clientRequest.getAddress().getPincode());
-            String errorMessage = String.format("Client already present with name %s and with pincode %s",
-                    clientRequest.getName(), clientRequest.getAddress().getPincode());
-            throw new ProcessException("Update client", errorMessage);
+        if (criticalUpdate) {
+            clientOptional = clientRepository.
+                    findByNameAndAddressPincodeAndClientType(client.getName(),
+                            client.getAddress().getPincode(), client.getClientType());
+            if (clientOptional.isPresent()) {
+                log.error("Client already present with name : {}, pincode: {}, clientType: {}",
+                        clientRequest.getName(), clientRequest.getAddress().getPincode(), clientRequest.getClientType());
+                String errorMessage = String.format("Client already present with name %s , pincode %s and clientType %s",
+                        clientRequest.getName(), clientRequest.getAddress().getPincode(), clientRequest.getClientType().name());
+                throw new ProcessException("Update client", errorMessage);
+            }
         }
         client = clientRepository.save(client);
         return ClientResponse.from(client, false);
     }
 
     @Override
-    public List<ClientResponse> getClientsByName(String clientName, Integer pageNumber, Integer pageSize, String sortBy, String order) {
+    public ResponseEntity<List<ClientResponse>> getClientsByName
+            (String clientName, Integer pageNumber, Integer pageSize, String sortBy, String order) {
         log.debug("Starting getClients for clientName: {}, pageNumber: {}, pageSize: {}, sortBy: {} and order: {}",
                 clientName, pageNumber, pageSize, sortBy, order);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
         List<Client> clients = clientRepository.findAllByName(clientName, pageable);
         log.debug("Returning from getClientsByName with client response: {}", clients);
-        return ClientResponse.from(clients);
+        return ClientResponse.getResponseEntityFrom(clients);
     }
 
     @Override
-    public List<ClientResponse> getAllClients(Integer pageNumber, Integer pageSize, String sortBy, String order) {
+    public ResponseEntity<List<ClientResponse>> getAllClients(Integer pageNumber, Integer pageSize, String sortBy, String order) {
         log.debug("Starting getAllClients with pageNumber: {}, pageSize: {}, sortBy: {} and order: {}",
                 pageNumber, pageSize, sortBy, order);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
         Page<Client> clients = clientRepository.findAll(pageable);
         log.debug("Returning from getAllClients with client response: {}", clients);
-        return ClientResponse.from(clients.getContent());
+        return ClientResponse.getResponseEntityFrom(clients.getContent());
     }
 
     @Override
@@ -117,7 +132,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public boolean deleteClient(long id) {
+    public boolean deleteClientById(long id) {
         log.debug("Deleting client with id: {}", id);
         Optional<Client> optionalClient = clientRepository.findById(id);
         if (!optionalClient.isPresent()) {
@@ -141,6 +156,18 @@ public class ClientServiceImpl implements ClientService {
         }
         log.error("Active client not found with id: {}", id);
         return false;
+    }
+
+    @Override
+    public boolean deleteClientBySlug(String slug) {
+        log.debug("Deleting client with slug: {}", slug);
+        Optional<Client> optionalClient = clientRepository.findBySlug(slug);
+        if (!optionalClient.isPresent()) {
+            log.error("Client not present with slug: {}", slug);
+            return false;
+        }
+        clientRepository.delete(optionalClient.get());
+        return true;
     }
 
     private String generateClientSlug(String clientName) throws ProcessException {
