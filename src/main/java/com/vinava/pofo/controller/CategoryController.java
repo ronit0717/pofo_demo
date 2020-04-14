@@ -4,35 +4,50 @@ import com.vinava.pofo.dto.request.CategoryRequest;
 import com.vinava.pofo.dto.response.CategoryResponse;
 import com.vinava.pofo.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
+import javax.validation.constraints.NotNull;
+import java.util.List;
 
 public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @PostMapping("create")
+    @PostMapping()
     private CategoryResponse createCategory(@Valid @RequestBody CategoryRequest request,
                                             @RequestHeader(value = "pofo_client_id") long clientId) {
         return categoryService.create(request, clientId);
     }
 
-    @PostMapping("update")
-    private CategoryResponse updateCateoory(@Valid @RequestBody CategoryRequest request,
+    @PutMapping("{id}")
+    private CategoryResponse updateCateoory(@NotNull @PathVariable Long id,
+                                            @Valid @RequestBody CategoryRequest request,
                                             @RequestHeader(value = "pofo_client_id") long clientId) {
-        return categoryService.update(request, clientId);
+        return categoryService.update(id, request, clientId);
     }
 
-    @DeleteMapping("delete/{id}/{clientId}")
-    private boolean deleteClient(@PathParam(value = "id") long id,
+    @DeleteMapping("{id}")
+    private boolean deleteClient(@NotNull @PathVariable(value = "id") Long id,
                                  @RequestHeader(value = "pofo_client_id") long clientId) {
         return categoryService.delete(id, clientId);
+    }
+
+    @GetMapping("{id}")
+    private CategoryResponse getCategoryById(@NotNull @PathVariable(value = "id") Long id,
+                                             @RequestHeader(value = "pofo_client_id") long clientId) {
+        return categoryService.getById(id, clientId);
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<CategoryResponse>> getAllClients(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+                                                                @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
+                                                                @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
+                                                                @RequestParam(value = "_order", defaultValue = "DESC") String order,
+                                                                @RequestHeader(value = "pofo_client_id") long clientId) {
+        return categoryService.getAllCategories(clientId, pageNumber, pageSize, sortBy, order);
     }
 
 }

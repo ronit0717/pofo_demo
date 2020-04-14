@@ -45,6 +45,8 @@ public class Category {
     @Column(length = 1000)
     private String description;
 
+    private int level;
+
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate

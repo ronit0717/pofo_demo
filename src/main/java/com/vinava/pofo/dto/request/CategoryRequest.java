@@ -11,8 +11,6 @@ import javax.validation.constraints.Size;
 @Builder
 public class CategoryRequest {
 
-    private Long id;
-
     private Long parentCategoryId;
 
     @Size(max = 100)
