@@ -3,6 +3,7 @@ package com.vinava.pofo.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vinava.pofo.enumeration.CategoryType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -20,6 +21,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Category {
 
     @Id
@@ -40,7 +42,10 @@ public class Category {
 
     private Long imageId;
 
+    @Column(length = 1000)
     private String description;
+
+    private int level;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

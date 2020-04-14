@@ -108,7 +108,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public ClientResponse getClientById(Long id) {
+    public ClientResponse getClientById(long id) {
         log.debug("Fetching client with id: {}", id);
         Optional<Client> clientOptional = clientRepository.findById(id);
         ClientResponse clientResponse = null;
@@ -144,6 +144,21 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    public boolean isClientActive(long id) {
+        log.debug("Checking active status for client with id: {}", id);
+        Optional<Client> clientOptional = clientRepository.findById(id);
+        if (clientOptional.isPresent()) {
+            Client client = clientOptional.get();
+            log.debug("Client found : {}", client);
+            if (client.isActive()) {
+                return true;
+            }
+        }
+        log.error("Active client not found with id: {}", id);
+        return false;
+    }
+
+    @Override
     public boolean deleteClientBySlug(String slug) {
         log.debug("Deleting client with slug: {}", slug);
         Optional<Client> optionalClient = clientRepository.findBySlug(slug);
@@ -154,7 +169,6 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.delete(optionalClient.get());
         return true;
     }
-
 
     private String generateClientSlug(String clientName) throws ProcessException {
         log.debug("Creating slug for clientName: {}", clientName);

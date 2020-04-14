@@ -4,5 +4,6 @@ public enum CategoryType {
     PRODUCT,
     SERVICE,
     BRAND,
-    PROJECT
+    PROJECT,
+    VIDEO
 }
