@@ -11,6 +11,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+@RestController
+@RequestMapping("/pofo/category")
 public class CategoryController {
 
     @Autowired
