@@ -20,26 +20,26 @@ public class CategoryController {
 
     @PostMapping()
     private CategoryResponse createCategory(@Valid @RequestBody CategoryRequest request,
-                                            @RequestHeader(value = "pofo_client_id") long clientId) {
+                                            @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return categoryService.create(request, clientId);
     }
 
     @PutMapping("{id}")
     private CategoryResponse updateCategory(@NotNull @PathVariable Long id,
                                             @Valid @RequestBody CategoryRequest request,
-                                            @RequestHeader(value = "pofo_client_id") long clientId) {
+                                            @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return categoryService.update(id, request, clientId);
     }
 
     @DeleteMapping("{id}")
     private boolean deleteCategory(@NotNull @PathVariable(value = "id") Long id,
-                                 @RequestHeader(value = "pofo_client_id") long clientId) {
+                                 @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return categoryService.delete(id, clientId);
     }
 
     @GetMapping("{id}")
     private CategoryResponse getCategoryById(@NotNull @PathVariable(value = "id") Long id,
-                                             @RequestHeader(value = "pofo_client_id") long clientId) {
+                                             @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return categoryService.getById(id, clientId);
     }
 
@@ -48,7 +48,7 @@ public class CategoryController {
                                                                 @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                                 @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                                 @RequestParam(value = "_order", defaultValue = "DESC") String order,
-                                                                @RequestHeader(value = "pofo_client_id") long clientId) {
+                                                                @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return categoryService.getAllCategories(clientId, pageNumber, pageSize, sortBy, order);
     }
 
