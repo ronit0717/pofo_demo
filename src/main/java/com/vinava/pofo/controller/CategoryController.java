@@ -25,14 +25,14 @@ public class CategoryController {
     }
 
     @PutMapping("{id}")
-    private CategoryResponse updateCateoory(@NotNull @PathVariable Long id,
+    private CategoryResponse updateCategory(@NotNull @PathVariable Long id,
                                             @Valid @RequestBody CategoryRequest request,
                                             @RequestHeader(value = "pofo_client_id") long clientId) {
         return categoryService.update(id, request, clientId);
     }
 
     @DeleteMapping("{id}")
-    private boolean deleteClient(@NotNull @PathVariable(value = "id") Long id,
+    private boolean deleteCategory(@NotNull @PathVariable(value = "id") Long id,
                                  @RequestHeader(value = "pofo_client_id") long clientId) {
         return categoryService.delete(id, clientId);
     }
@@ -44,7 +44,7 @@ public class CategoryController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<CategoryResponse>> getAllClients(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+    public ResponseEntity<List<CategoryResponse>> getAllCategories(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                                 @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                                 @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                                 @RequestParam(value = "_order", defaultValue = "DESC") String order,

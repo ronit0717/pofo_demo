@@ -5,6 +5,7 @@ import com.vinava.pofo.model.Category;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Data
@@ -13,6 +14,7 @@ public class CategoryRequest {
 
     private Long parentCategoryId;
 
+    @NotBlank
     @Size(max = 100)
     private String name;
 
