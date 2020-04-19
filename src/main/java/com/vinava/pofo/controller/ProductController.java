@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@RequestMapping("/pofo/product")
 public class ProductController {
 
     @Autowired
