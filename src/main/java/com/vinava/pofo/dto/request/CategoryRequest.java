@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
@@ -18,6 +19,7 @@ public class CategoryRequest {
     @Size(max = 100)
     private String name;
 
+    @NotNull
     private CategoryType categoryType;
 
     private Long imageId;

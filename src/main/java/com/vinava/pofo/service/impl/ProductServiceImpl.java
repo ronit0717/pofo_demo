@@ -2,6 +2,7 @@ package com.vinava.pofo.service.impl;
 
 import com.vinava.pofo.dao.ProductRepository;
 import com.vinava.pofo.dto.request.ProductRequest;
+import com.vinava.pofo.dto.response.CategoryResponse;
 import com.vinava.pofo.dto.response.ProductResponse;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.Product;
@@ -24,6 +25,9 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    CategoryServiceImpl categoryService;
+
     @Override
     public ProductResponse createProduct(ProductRequest productRequest, long clientId) {
         log.debug("Starting createProduct with request: {}, for clientId: {}", productRequest, clientId);
@@ -33,6 +37,13 @@ public class ProductServiceImpl implements ProductService {
             log.error("Product already exists with name: {}, and productCategoryId: {} for clientId: {}",
                     productRequest.getName(), productRequest.getProductCategoryId(), clientId);
             throw new ProcessException("Product creation", "Product already exists in this category with same name");
+        }
+        if (productRequest.getProductCategoryId() != 0L) {
+            CategoryResponse categoryResponse = categoryService.getById(productRequest.getProductCategoryId(), clientId);
+            if (categoryResponse == null) {
+                log.error("Category not found with id: {}, clientId: {}", productRequest.getProductCategoryId(), clientId);
+                throw new ProcessException("Create product", "Invalid product category ID");
+            }
         }
         Product product = productRequest.from(clientId);
         product = productRepository.save(product);

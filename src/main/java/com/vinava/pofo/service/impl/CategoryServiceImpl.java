@@ -86,7 +86,7 @@ public class CategoryServiceImpl implements CategoryService {
         log.debug("Fetching category details for categoryId: {} and clientId: {}", categoryId, clientId);
         Optional<Category> optionalCategory = categoryRepository.findByIdAndClientId(categoryId, clientId);
         if (!optionalCategory.isPresent()) {
-            log.debug("Category not foung with id: {} and clientId: {}", categoryId, clientId);
+            log.debug("Category not found with id: {} and clientId: {}", categoryId, clientId);
             return null;
         }
         return CategoryResponse.from(optionalCategory.get());

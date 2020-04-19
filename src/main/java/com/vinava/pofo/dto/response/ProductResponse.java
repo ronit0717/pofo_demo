@@ -45,6 +45,8 @@ public class ProductResponse {
                 .discountPercentage(product.getDiscountPercentage())
                 .sellingPrice(ComputationUtil.getDiscountedPrice(product.getPrice(), product.getDiscountPercentage()))
                 .productPricingType(product.getProductPricingType())
+                .productImageIds(product.getProductImageIds())
+                .productAttributes(product.getProductAttributes())
                 .description(product.getDescription())
                 .createdOn(product.getCreatedOn())
                 .updatedOn(product.getUpdatedOn())
