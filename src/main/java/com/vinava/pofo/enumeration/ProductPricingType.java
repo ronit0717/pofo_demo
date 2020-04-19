@@ -1,6 +1,6 @@
 package com.vinava.pofo.enumeration;
 
-public enum ProductType {
+public enum ProductPricingType {
     FIXED_PRICE,
     QUOTE,
     FREE

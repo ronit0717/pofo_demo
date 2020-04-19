@@ -1,9 +1,10 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vinava.pofo.enumeration.ProductType;
+import com.vinava.pofo.enumeration.ProductPricingType;
 import com.vinava.pofo.model.embed.ProductAttribute;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,6 +24,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Product {
 
     @Id
@@ -32,10 +34,13 @@ public class Product {
     @Column(nullable = false)
     private long clientId;
 
-    private Long productCategoryId;
+    @Column(nullable = false, length = 200)
+    private String name;
+
+    private long productCategoryId;
 
     @Enumerated(value = EnumType.STRING)
-    private ProductType productType;
+    private ProductPricingType productPricingType;
 
     private BigDecimal price;
 

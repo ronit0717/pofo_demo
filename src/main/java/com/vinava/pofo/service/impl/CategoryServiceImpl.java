@@ -94,7 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ResponseEntity<List<CategoryResponse>> getAllCategories(Long clientId, Integer pageNumber, Integer pageSize, String sortBy, String order) {
-        log.debug("Starting getAllClients with pageNumber: {}, pageSize: {}, sortBy: {}, order: {} and clientId: {}",
+        log.debug("Starting getAllCategories with pageNumber: {}, pageSize: {}, sortBy: {}, order: {} and clientId: {}",
                 pageNumber, pageSize, sortBy, order, clientId);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
