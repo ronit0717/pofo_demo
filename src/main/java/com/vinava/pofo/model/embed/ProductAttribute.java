@@ -23,6 +23,6 @@ public class ProductAttribute {
     @Column(length = 500, nullable = false)
     private String attributeValue;
 
-    private Integer order;
+    private Integer attributeOrder;
 
 }

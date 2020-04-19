@@ -22,6 +22,7 @@ public class ProductRequest {
     @Size(max = 200)
     private String name;
 
+    @NotNull
     private ProductPricingType productPricingType;
 
     @NotNull
@@ -39,7 +40,7 @@ public class ProductRequest {
     public Product from(long clientId) {
         return Product.builder()
                 .clientId(clientId)
-                .productCategoryId(this.productCategoryId)
+                .productCategoryId(getProductCategoryId())
                 .name((this.name))
                 .productPricingType(this.productPricingType)
                 .price(this.price)
