@@ -1,6 +1,5 @@
 package com.vinava.pofo.controller;
 
-import com.sun.istack.NotNull;
 import com.vinava.pofo.dto.request.ProductRequest;
 import com.vinava.pofo.dto.response.ProductResponse;
 import com.vinava.pofo.service.ProductService;
@@ -9,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
