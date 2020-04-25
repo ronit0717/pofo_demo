@@ -1,5 +1,6 @@
 package com.vinava.pofo.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vinava.pofo.enumeration.UserType;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.User;
@@ -17,7 +18,7 @@ import javax.validation.constraints.Size;
 @Builder
 public class UserRequest {
 
-    @Autowired
+    @JsonIgnore
     private ValidationService validationService;
 
     @NotBlank
@@ -41,7 +42,8 @@ public class UserRequest {
 
     private String designation;
 
-    public User from(long clientId) {
+    public User from(long clientId, ValidationService validationService) {
+        this.validationService = validationService;
         validateUserRequest();
         return User.builder()
                 .clientId(clientId)

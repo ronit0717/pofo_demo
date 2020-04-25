@@ -6,6 +6,7 @@ import com.vinava.pofo.dto.response.UserResponse;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.User;
 import com.vinava.pofo.service.UserService;
+import com.vinava.pofo.service.helper.ValidationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private ValidationService validationService;
+
     @Override
     public UserResponse createUser(UserRequest userRequest, long clientId) {
         log.debug("Creating user for clientId: {} and userRequest: {}", clientId, userRequest);
@@ -36,7 +40,8 @@ public class UserServiceImpl implements UserService {
             log.error("UserByEmail : {}", userByEmail);
             log.error("UserByMobile : {}", userByMobile);
             log.error("UserByUserName: {}", userByUserName);
-            if ((userByEmail.getId() != userByMobile.getId()) || (userByEmail.getId() != userByUserName.getId())) {
+            if ((userByEmail != null && userByMobile != null && userByEmail.getId() != userByMobile.getId()) ||
+                    (userByEmail != null && userByUserName!= null && userByEmail.getId() != userByUserName.getId())) {
                 log.error("Conflict detected");
                 throw new ProcessException("User creation", "User already present with email/mobile/userName in request");
             }
@@ -47,7 +52,7 @@ public class UserServiceImpl implements UserService {
         }
         log.debug("User not found with email: {} or mobile: {} for clientId: {}",
                 userRequest.getEmail(), userRequest.getMobile(), clientId);
-        User user = userRequest.from(clientId);
+        User user = userRequest.from(clientId, validationService);
         userRepository.save(user);
         log.debug("New user created: {}", user);
         return UserResponse.from(user);
@@ -61,7 +66,7 @@ public class UserServiceImpl implements UserService {
             log.error("User not present with id: {}, and clientId: {}", id, clientId);
             throw new ProcessException("User updation", "Invalid user ID");
         }
-        User user = userRequest.from(clientId);
+        User user = userRequest.from(clientId, validationService);
         user.setId(id);
         user = userRepository.save(user);
         log.debug("Updated user with id: {} and clientId: {}. Response: {}", id, clientId, user);
