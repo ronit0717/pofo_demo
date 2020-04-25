@@ -1,13 +1,13 @@
 package com.vinava.pofo.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vinava.pofo.enumeration.UserType;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.User;
 import com.vinava.pofo.service.helper.ValidationService;
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotBlank;
@@ -16,6 +16,7 @@ import javax.validation.constraints.Size;
 
 @Data
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserRequest {
 
     @JsonIgnore
