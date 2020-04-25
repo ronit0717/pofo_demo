@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
             log.error("UserByMobile : {}", userByMobile);
             log.error("UserByUserName: {}", userByUserName);
             if ((userByEmail != null && userByMobile != null && userByEmail.getId() != userByMobile.getId()) ||
-                    (userByEmail != null && userByUserName!= null && userByEmail.getId() != userByUserName.getId())) {
+                    (userByEmail != null && userByUserName != null && userByEmail.getId() != userByUserName.getId())) {
                 log.error("Conflict detected");
                 throw new ProcessException("User creation", "User already present with email/mobile/userName in request");
             }
