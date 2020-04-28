@@ -12,4 +12,14 @@ public class ComputationUtil {
         return originalPrice.subtract(discount);
     }
 
+    public static BigDecimal getFinalAmount(BigDecimal taxablePrice, BigDecimal taxPercentage) {
+        BigDecimal tax = (taxablePrice.multiply(taxPercentage)).divide(ONE_HUNDRED, RoundingMode.CEILING);
+        return taxablePrice.add(tax);
+    }
+
+    public static boolean isValidPercentage(BigDecimal percentage) {
+        int result = percentage.compareTo(ONE_HUNDRED);
+        return (result != 0 && result != 1);
+    }
+
 }

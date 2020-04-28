@@ -61,9 +61,9 @@ public class ProductResponse {
         return productResponses;
     }
 
-    public static ResponseEntity<List<ProductResponse>> getResponseEntityFrom(List<Product> categories) {
+    public static ResponseEntity<List<ProductResponse>> getResponseEntityFrom(List<Product> products) {
         try {
-            List<ProductResponse> clientResponses = from(categories);
+            List<ProductResponse> clientResponses = from(products);
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Total-Count", String.valueOf(clientResponses.size()));
             headers.add("Access-Control-Expose-Headers", "X-Total-Count");
@@ -72,7 +72,7 @@ public class ProductResponse {
                     .headers(headers)
                     .body(clientResponses);
         } catch (Exception e) {
-            log.error("In exception block of getResponseEntityFrom for list of categories: {}", categories, e);
+            log.error("In exception block of getResponseEntityFrom for list of products: {}", products, e);
             return ResponseEntity.badRequest().build();
         }
     }
