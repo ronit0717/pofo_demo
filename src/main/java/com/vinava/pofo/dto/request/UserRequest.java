@@ -62,12 +62,19 @@ public class UserRequest {
         if ((!StringUtils.isEmpty(this.email)) && (!validationService.validateEmail(this.email))) {
             throw new ProcessException("User request validation", "Invalid email");
         }
+        if ((!StringUtils.isEmpty(this.userName)) && (!validationService.validateAlphanumeric(this.userName))) {
+            throw new ProcessException("User request validation", "Invalid user Name");
+        }
         if (UserType.CORPORATE.equals(this.userType)) {
             if (StringUtils.isEmpty(this.companyName) || StringUtils.isEmpty((this.designation))) {
                 throw new ProcessException("User request validation",
                         "For corporate users, company name and designation is mandatory");
             }
         }
+    }
+
+    public String getUserName() {
+        return this.userName.trim().toLowerCase();
     }
 
 }
