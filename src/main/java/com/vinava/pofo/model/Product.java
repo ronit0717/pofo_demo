@@ -51,9 +51,9 @@ public class Product {
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "image_id")
-    private Set<Long> productImageIds = new HashSet<>();
+    private Set<String> productImages = new HashSet<>();
 
-    @Column(length = 2048)
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ElementCollection(fetch = FetchType.LAZY)

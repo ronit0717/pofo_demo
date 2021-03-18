@@ -21,7 +21,7 @@ public class ClientRequest {
     @Size(max = 100, message = "Client name should be of maximum length of 100")
     private String name;
 
-    private Long logoImageId;
+    private String logoImage;
 
     private Boolean active;
 
@@ -58,7 +58,7 @@ public class ClientRequest {
         client.setAddress(this.getAddress());
         client.setContactDetail(this.getContactDetail());
         client.setGstin(this.getGstin());
-        client.setLogoImageId(this.getLogoImageId());
+        client.setLogoImage(this.getLogoImage());
         client.setClientType(this.getClientType());
         return client;
     }

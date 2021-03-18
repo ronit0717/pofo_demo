@@ -22,7 +22,7 @@ public class CategoryResponse {
     private String name;
     private String description;
     private CategoryType categoryType;
-    private Long imageId;
+    private String image;
     private Long parentCategoryId;
     private int level;
     private Date createdOn;
@@ -35,7 +35,7 @@ public class CategoryResponse {
                 .name(category.getName())
                 .description(category.getDescription())
                 .categoryType(category.getCategoryType())
-                .imageId(category.getImageId())
+                .image(category.getImage())
                 .parentCategoryId(category.getParentCategoryId())
                 .level(category.getLevel())
                 .createdOn(category.getCreatedOn())

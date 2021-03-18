@@ -31,7 +31,7 @@ public class ProductRequest {
     @NotNull
     private BigDecimal discountPercentage;
 
-    private Set<Long> productImageIds;
+    private Set<String> productImages;
 
     private String description;
 
@@ -45,7 +45,7 @@ public class ProductRequest {
                 .productPricingType(this.productPricingType)
                 .price(this.price)
                 .discountPercentage(this.discountPercentage)
-                .productImageIds(this.productImageIds)
+                .productImages(this.productImages)
                 .description(this.description)
                 .productAttributes(this.productAttributes)
                 .build();

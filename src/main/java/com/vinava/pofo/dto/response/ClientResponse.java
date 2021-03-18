@@ -34,7 +34,7 @@ public class ClientResponse {
 
     private boolean userExists;
 
-    private Long logoImageId;
+    private String logoImage;
 
     private Long subscriptionDaysRemaining;
 
@@ -58,7 +58,7 @@ public class ClientResponse {
                 .name(client.getName())
                 .slug(client.getSlug())
                 .active(client.isActive())
-                .logoImageId(client.getLogoImageId())
+                .logoImage(client.getLogoImage())
                 .userExists(!newUser)
                 .subscriptionDaysRemaining(DateUtil.getDayDifferent(client.getSubscriptionEndDate(), DateUtil.getCurrentDate()))
                 .address(client.getAddress())

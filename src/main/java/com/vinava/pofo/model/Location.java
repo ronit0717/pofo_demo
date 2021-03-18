@@ -34,6 +34,13 @@ public class Location {
     @Column(length = 30, nullable = false)
     private String name;
 
+    @NotBlank
+    @Column(length = 6, nullable = false)
+    private String pincode;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     @CreatedDate

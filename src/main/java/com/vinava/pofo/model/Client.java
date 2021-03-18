@@ -38,7 +38,8 @@ public class Client {
     @Column(length = 100, nullable = false)
     private String name;
 
-    private Long logoImageId;
+    @Column(length = 2048)
+    private String logoImage;
 
     @Column(nullable = false, columnDefinition = "boolean default true")
     private boolean active;

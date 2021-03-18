@@ -26,7 +26,7 @@ public class ProductResponse {
     private BigDecimal price;
     private BigDecimal discountPercentage;
     private BigDecimal sellingPrice;
-    private Set<Long> productImageIds;
+    private Set<String> productImages;
     private Set<ProductAttribute> productAttributes;
     private String description;
     private Date createdOn;
@@ -42,7 +42,7 @@ public class ProductResponse {
                 .discountPercentage(product.getDiscountPercentage())
                 .sellingPrice(ComputationUtil.getDiscountedPrice(product.getPrice(), product.getDiscountPercentage()))
                 .productPricingType(product.getProductPricingType())
-                .productImageIds(product.getProductImageIds())
+                .productImages(product.getProductImages())
                 .productAttributes(product.getProductAttributes())
                 .description(product.getDescription())
                 .createdOn(product.getCreatedOn())

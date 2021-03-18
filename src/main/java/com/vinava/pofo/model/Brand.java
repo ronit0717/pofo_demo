@@ -32,7 +32,8 @@ public class Brand {
     @Column(length = 100, nullable = false)
     private String name;
 
-    private Long logoImageId;
+    @Column(length = 2048)
+    private String brandLogo;
 
     @Column(length = 2048)
     private String brandLink;

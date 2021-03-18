@@ -40,7 +40,8 @@ public class Category {
     @Column(length = 100, nullable = false)
     private String name;
 
-    private Long imageId;
+    @Column(length = 2048)
+    private String image;
 
     @Column(length = 1000)
     private String description;

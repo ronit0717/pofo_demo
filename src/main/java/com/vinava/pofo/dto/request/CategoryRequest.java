@@ -22,7 +22,7 @@ public class CategoryRequest {
     @NotNull
     private CategoryType categoryType;
 
-    private Long imageId;
+    private String image;
 
     @Size(max = 1000)
     private String description;
@@ -33,7 +33,7 @@ public class CategoryRequest {
                 .parentCategoryId(this.parentCategoryId)
                 .name((this.name))
                 .categoryType(this.categoryType)
-                .imageId(this.imageId)
+                .image(this.image)
                 .description(this.description)
                 .build();
     }
