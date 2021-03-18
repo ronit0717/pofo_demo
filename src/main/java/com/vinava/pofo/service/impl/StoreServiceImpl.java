@@ -2,9 +2,11 @@ package com.vinava.pofo.service.impl;
 
 import com.vinava.pofo.dao.StoreRepository;
 import com.vinava.pofo.dto.request.StoreRequest;
+import com.vinava.pofo.dto.response.LocationResponse;
 import com.vinava.pofo.dto.response.StoreResponse;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.Store;
+import com.vinava.pofo.service.LocationService;
 import com.vinava.pofo.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class StoreServiceImpl implements StoreService {
     @Autowired
     private StoreRepository storeRepository;
 
+    @Autowired
+    private LocationService locationService;
+
     @Override
     public StoreResponse createStore(StoreRequest storeRequest, long clientId) {
         log.debug("Starting createStore with request: {}, for clientId: {}", storeRequest, clientId);
@@ -34,16 +39,14 @@ public class StoreServiceImpl implements StoreService {
                     storeRequest.getName(), storeRequest.getLocationId(), clientId);
             throw new ProcessException("Store creation", "Store already exists in this location with same name");
         }
-        /* Location Check here
-        CategoryResponse categoryResponse = categoryService.getById(productRequest.getProductCategoryId(), clientId);
-        if (categoryResponse == null) {
-            log.error("Category not found with id: {}, clientId: {}", productRequest.getProductCategoryId(), clientId);
-            throw new ProcessException("Create product", "Invalid product category ID");
+        LocationResponse locationResponse = locationService.getLocationById(storeRequest.getLocationId(), clientId);
+        if (locationResponse == null) {
+            log.error("Location not found with id: {}, clientId: {}", storeRequest.getLocationId(), clientId);
+            throw new ProcessException("Create Store", "Invalid location ID");
         }
-        */
         Store store = storeRequest.from(clientId);
         store = storeRepository.save(store);
-        log.debug("Returning from createProduct with response: {}, for clientId: {}", store, clientId);
+        log.debug("Returning from createStore with response: {}, for clientId: {}", store, clientId);
         return StoreResponse.from(store);
     }
 
@@ -72,13 +75,13 @@ public class StoreServiceImpl implements StoreService {
         }
         Store store = optionalStore.get();
         storeRepository.delete(store);
-        log.debug("Deleted product with id: {} and clientId: {}", id, clientId);
+        log.debug("Deleted store with id: {} and clientId: {}", id, clientId);
         return true;
     }
 
     @Override
     public StoreResponse getStoreById(long id, long clientId) {
-        log.debug("Fetching product with id: {}, for clientId: {}", id, clientId);
+        log.debug("Fetching store with id: {}, for clientId: {}", id, clientId);
         Optional<Store> optionalStore = storeRepository.findByIdAndClientId(id, clientId);
         if (!optionalStore.isPresent()) {
             log.error("Store not present with id: {}, and clientId: {}", id, clientId);
