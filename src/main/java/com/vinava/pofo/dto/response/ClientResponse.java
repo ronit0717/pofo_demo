@@ -13,8 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Builder
@@ -72,7 +72,7 @@ public class ClientResponse {
     }
 
     private static List<ClientResponse> from(List<Client> clients) {
-        List<ClientResponse> clientResponses = new ArrayList<>();
+        List<ClientResponse> clientResponses = new LinkedList<>();
         for (Client client: clients) {
             clientResponses.add(from(client, false));
         }

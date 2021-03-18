@@ -8,8 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -46,7 +46,7 @@ public class UserResponse {
     }
 
     private static List<UserResponse> from(List<User> users) {
-        List<UserResponse> userResponses = new ArrayList<>();
+        List<UserResponse> userResponses = new LinkedList<>();
         for (User user: users) {
             userResponses.add(from(user));
         }

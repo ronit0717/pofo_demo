@@ -2,6 +2,7 @@ package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
@@ -13,13 +14,14 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "locations")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Project {
+@Builder
+public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,23 +30,9 @@ public class Project {
     @Column(nullable = false)
     private long clientId;
 
-    private Long projectCategory;
-
     @NotBlank
-    @Column(length = 100, nullable = false)
+    @Column(length = 30, nullable = false)
     private String name;
-
-    @Column(length = 2048)
-    private String thumbnailImageId;
-
-    @Column(length = 1000)
-    private String shortDescription;
-
-    @Column(nullable = false, columnDefinition = "boolean default false")
-    private boolean hasDetailedPage;
-
-    @Column(columnDefinition = "TEXT")
-    private String innerHtml;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

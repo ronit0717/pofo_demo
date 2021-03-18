@@ -1,8 +1,6 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vinava.pofo.enumeration.ProductPricingType;
-import com.vinava.pofo.model.embed.ProductAttribute;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,20 +10,18 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
+import javax.validation.constraints.NotBlank;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 @Entity
-@Table(name = "products")
+@Table(name = "stores")
 @EntityListeners(AuditingEntityListener.class)
 @JsonIgnoreProperties(value = {"createdOn", "updatedOn"}, allowGetters = true)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Product {
+public class Store {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,31 +30,21 @@ public class Product {
     @Column(nullable = false)
     private long clientId;
 
-    @Column(nullable = false, length = 200)
+    @NotBlank
+    @Column(length = 30, nullable = false)
     private String name;
 
-    private long productCategoryId;
+    @Column(nullable = false)
+    private long locationId;
 
-    @Enumerated(value = EnumType.STRING)
-    private ProductPricingType productPricingType;
+    @Column(columnDefinition = "TEXT")
+    private String address;
 
-    private BigDecimal price;
+    @Column(length = 15)
+    private String gstin;
 
-    private BigDecimal discountPercentage;
-
-    private Long brandId;
-
-    @ElementCollection
-    @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))
-    @Column(name = "image_id")
-    private Set<Long> productImageIds = new HashSet<>();
-
-    @Column(length = 2048)
+    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "product_attributes", joinColumns = @JoinColumn(name = "product_id"))
-    private Set<ProductAttribute> productAttributes = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

@@ -11,10 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @Builder
@@ -54,7 +51,7 @@ public class ProductResponse {
     }
 
     private static List<ProductResponse> from(List<Product> products) {
-        List<ProductResponse> productResponses = new ArrayList<>();
+        List<ProductResponse> productResponses = new LinkedList<>();
         for (Product product: products) {
             productResponses.add(from(product));
         }
@@ -63,14 +60,14 @@ public class ProductResponse {
 
     public static ResponseEntity<List<ProductResponse>> getResponseEntityFrom(List<Product> products) {
         try {
-            List<ProductResponse> clientResponses = from(products);
+            List<ProductResponse> productResponses = from(products);
             HttpHeaders headers = new HttpHeaders();
-            headers.add("X-Total-Count", String.valueOf(clientResponses.size()));
+            headers.add("X-Total-Count", String.valueOf(productResponses.size()));
             headers.add("Access-Control-Expose-Headers", "X-Total-Count");
 
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body(clientResponses);
+                    .body(productResponses);
         } catch (Exception e) {
             log.error("In exception block of getResponseEntityFrom for list of products: {}", products, e);
             return ResponseEntity.badRequest().build();
