@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -20,43 +19,32 @@ public class UserController {
     private UserService userService;
 
     @PostMapping()
-    private UserResponse createUser(@Valid @RequestBody UserRequest request,
-                                    @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return userService.createUser(request, clientId);
+    private UserResponse createUser(@Valid @RequestBody UserRequest request) {
+        return userService.createUser(request);
     }
 
     @PutMapping("{id}")
     private UserResponse updateUser(@NotNull @PathVariable Long id,
-                                    @Valid @RequestBody UserRequest request,
-                                    @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return userService.updateUser(id, clientId, request);
+                                    @Valid @RequestBody UserRequest request) {
+        return userService.updateUser(id, request);
     }
 
     @DeleteMapping("{id}")
-    private boolean deleteUser(@NotNull @PathVariable(value = "id") Long id,
-                               @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return userService.deleteUser(id, clientId);
+    private boolean deleteUser(@NotNull @PathVariable(value = "id") Long id) {
+        return userService.deleteUser(id);
     }
 
     @GetMapping("{id}")
-    private UserResponse getUserById(@NotNull @PathVariable(value = "id") Long id,
-                                     @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return userService.getUserById(id, clientId);
-    }
-
-    @GetMapping("username/{username}")
-    private UserResponse getClientByUserName(@NotBlank @PathVariable(value = "username") String userName,
-                                             @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return userService.getUserByUserName(userName, clientId);
+    private UserResponse getUserById(@NotNull @PathVariable(value = "id") Long id) {
+        return userService.getUserById(id);
     }
 
     @GetMapping()
     public ResponseEntity<List<UserResponse>> getAllUsers(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                           @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                           @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
-                                                          @RequestParam(value = "_order", defaultValue = "DESC") String order,
-                                                          @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return userService.getAllUsers(clientId, pageNumber, pageSize, sortBy, order);
+                                                          @RequestParam(value = "_order", defaultValue = "DESC") String order) {
+        return userService.getAllUsers(pageNumber, pageSize, sortBy, order);
     }
 
 }

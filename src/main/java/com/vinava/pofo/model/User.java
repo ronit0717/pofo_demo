@@ -1,7 +1,6 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.vinava.pofo.enumeration.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,29 +27,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
-    private long clientId;
-
-    @NotBlank
-    @Column(length = 15, nullable = false)
-    private String userName;
+    private String authId;
 
     @NotBlank
     @Column(length = 200, nullable = false)
-    private String fullName;
+    private String name;
 
     @Column(length = 200)
     private String email;
 
     @Column(length = 15)
     private String mobile;
-
-    @Enumerated(value = EnumType.STRING)
-    private UserType userType;
-
-    private String companyName;
-
-    private String designation;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)

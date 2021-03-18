@@ -1,10 +1,10 @@
 package com.vinava.pofo.dto.response;
 
-import com.vinava.pofo.enumeration.UserType;
 import com.vinava.pofo.model.User;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
@@ -18,34 +18,25 @@ import java.util.List;
 public class UserResponse {
 
     private long id;
-    private long clientId;
-    private String userName;
-    private String fullName;
+    private String authId;
+    private String name;
     private String email;
     private String mobile;
-    private UserType userType;
-    private String companyName;
-    private String designation;
     private Date createdOn;
     private Date updatedOn;
 
     public static UserResponse from(User user) {
         return UserResponse.builder()
                 .id(user.getId())
-                .clientId(user.getClientId())
-                .userName(user.getUserName())
-                .fullName(user.getFullName())
+                .authId(user.getAuthId())
                 .email(user.getEmail())
                 .mobile(user.getMobile())
-                .userType(user.getUserType())
-                .companyName(user.getCompanyName())
-                .designation(user.getDesignation())
                 .createdOn(user.getCreatedOn())
                 .updatedOn(user.getUpdatedOn())
                 .build();
     }
 
-    private static List<UserResponse> from(List<User> users) {
+    private static List<UserResponse> from(Page<User> users) {
         List<UserResponse> userResponses = new LinkedList<>();
         for (User user: users) {
             userResponses.add(from(user));
@@ -53,7 +44,7 @@ public class UserResponse {
         return userResponses;
     }
 
-    public static ResponseEntity<List<UserResponse>> getResponseEntityFrom(List<User> users) {
+    public static ResponseEntity<List<UserResponse>> getResponseEntityFrom(Page<User> users) {
         try {
             List<UserResponse> userResponses = from(users);
             HttpHeaders headers = new HttpHeaders();

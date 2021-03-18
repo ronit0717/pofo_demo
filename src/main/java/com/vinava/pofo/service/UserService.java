@@ -7,11 +7,10 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface UserService {
-    UserResponse createUser(UserRequest userRequest, long clientId);
-    UserResponse updateUser(long id, long clientId, UserRequest userRequest);
-    boolean deleteUser(long id, long clientId);
-    UserResponse getUserById(long id, long clientId);
-    UserResponse getUserByUserName(String userName, long clientId);
-    ResponseEntity<List<UserResponse>> getAllUsers(long clientId, Integer pageNumber,
+    UserResponse createUser(UserRequest userRequest);
+    UserResponse updateUser(long id, UserRequest userRequest);
+    boolean deleteUser(long id);
+    UserResponse getUserById(long id);
+    ResponseEntity<List<UserResponse>> getAllUsers(Integer pageNumber,
                                                    Integer pageSize, String sortBy, String order);
 }
