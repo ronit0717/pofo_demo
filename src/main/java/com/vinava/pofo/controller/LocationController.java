@@ -38,13 +38,13 @@ public class LocationController {
     }
 
     @GetMapping("{id}")
-    private LocationResponse getProductById(@NotNull @PathVariable(value = "id") Long id,
+    private LocationResponse getLocationById(@NotNull @PathVariable(value = "id") Long id,
                                             @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return locationService.getLocationById(id, clientId);
     }
 
     @GetMapping()
-    public ResponseEntity<List<LocationResponse>> getAllProducts(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+    public ResponseEntity<List<LocationResponse>> getAllBrands(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                                  @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                                  @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                                  @RequestParam(value = "_order", defaultValue = "DESC") String order,

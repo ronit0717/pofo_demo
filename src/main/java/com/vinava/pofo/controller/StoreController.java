@@ -38,13 +38,13 @@ public class StoreController {
     }
 
     @GetMapping("{id}")
-    private StoreResponse getProductById(@NotNull @PathVariable(value = "id") Long id,
+    private StoreResponse getStoreById(@NotNull @PathVariable(value = "id") Long id,
                                            @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return storeService.getStoreById(id, clientId);
     }
 
     @GetMapping()
-    public ResponseEntity<List<StoreResponse>> getAllProducts(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+    public ResponseEntity<List<StoreResponse>> getAllStores(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                                 @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                                 @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                                 @RequestParam(value = "_order", defaultValue = "DESC") String order,
