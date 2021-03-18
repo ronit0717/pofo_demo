@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Builder
@@ -49,7 +50,7 @@ public class CartResponse {
     }
 
     private static List<CartEntityResponse> getCartEntityResponseSetFrom(List<CartEntity> cartEntities) {
-        List<CartEntityResponse> responseList = new ArrayList<>();
+        List<CartEntityResponse> responseList = new LinkedList<>();
         for (CartEntity cartEntity : cartEntities) {
             BigDecimal unitPrice = cartEntity.getUnitPrice();
             BigDecimal discountPercentage = cartEntity.getDiscountPercentage();
