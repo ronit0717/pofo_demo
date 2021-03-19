@@ -50,18 +50,18 @@ public class StockResponse {
         return productResponses;
     }
 
-    public static ResponseEntity<List<StockResponse>> getResponseEntityFrom(List<Stock> products) {
+    public static ResponseEntity<List<StockResponse>> getResponseEntityFrom(List<Stock> stocks) {
         try {
-            List<StockResponse> productResponses = from(products);
+            List<StockResponse> stockResponses = from(stocks);
             HttpHeaders headers = new HttpHeaders();
-            headers.add("X-Total-Count", String.valueOf(productResponses.size()));
+            headers.add("X-Total-Count", String.valueOf(stockResponses.size()));
             headers.add("Access-Control-Expose-Headers", "X-Total-Count");
 
             return ResponseEntity.ok()
                     .headers(headers)
-                    .body(productResponses);
+                    .body(stockResponses);
         } catch (Exception e) {
-            log.error("In exception block of getResponseEntityFrom for list of products: {}", products, e);
+            log.error("In exception block of getResponseEntityFrom for list of stocks: {}", stocks, e);
             return ResponseEntity.badRequest().build();
         }
     }

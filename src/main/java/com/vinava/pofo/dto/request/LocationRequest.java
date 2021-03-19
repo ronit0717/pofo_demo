@@ -19,7 +19,7 @@ public class LocationRequest {
     private String name;
 
     @NotNull
-    @Size(max = 6)
+    @Size(min = 6, max = 6, message = "Invalid Pincode")
     private String pincode;
 
     private String description;

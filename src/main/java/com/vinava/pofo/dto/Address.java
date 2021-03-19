@@ -42,7 +42,7 @@ public class Address {
     private String country;
 
     @NotBlank
-    @Size(min = 6, max = 6)
+    @Size(min = 6, max = 6, message = "Invalid Pincode")
     @Column(length = 6, nullable = false)
     private String pincode;
 
