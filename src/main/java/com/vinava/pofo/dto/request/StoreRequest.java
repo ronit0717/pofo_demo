@@ -25,7 +25,7 @@ public class StoreRequest {
 
     private String address;
 
-    @Size(min = 15, max = 15, message = "Invalid GSTIN")
+    @Size(max = 15, message = "Invalid GSTIN")
     private String gstin;
 
     private Set<ProductAttribute> productAttributes;

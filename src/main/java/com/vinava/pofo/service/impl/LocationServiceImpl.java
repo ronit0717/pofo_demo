@@ -6,6 +6,7 @@ import com.vinava.pofo.dto.response.LocationResponse;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.Location;
 import com.vinava.pofo.service.LocationService;
+import com.vinava.pofo.service.StoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -24,6 +25,9 @@ public class LocationServiceImpl implements LocationService {
     @Autowired
     private LocationRepository locationRepository;
 
+    @Autowired
+    private StoreService storeService;
+
     @Override
     public LocationResponse createLocation(LocationRequest locationRequest, long clientId) {
         log.debug("Starting createLocation with request: {}, for clientId: {}", locationRequest, clientId);
@@ -37,7 +41,7 @@ public class LocationServiceImpl implements LocationService {
         Location location = locationRequest.from(clientId);
         location = locationRepository.save(location);
         log.debug("Returning from createLocation with response: {}, for clientId: {}", location, clientId);
-        return LocationResponse.from(location);
+        return LocationResponse.from(location, storeService);
     }
 
     @Override
@@ -52,7 +56,7 @@ public class LocationServiceImpl implements LocationService {
         location.setId(id);
         location = locationRepository.save(location);
         log.debug("Updated location with id: {} and clientId: {}. Response: {}", id, clientId, location);
-        return LocationResponse.from(location);
+        return LocationResponse.from(location, storeService);
     }
 
     @Override
@@ -79,7 +83,7 @@ public class LocationServiceImpl implements LocationService {
         }
         Location location = optionalLocation.get();
         log.debug("Fetched location with id: {} and clientId: {}. Response: {}", id, clientId, location);
-        return LocationResponse.from(location);
+        return LocationResponse.from(location, storeService);
     }
 
     @Override
@@ -92,7 +96,7 @@ public class LocationServiceImpl implements LocationService {
         List<Location> locations = locationRepository.findAllByClientId(clientId, pageable);
         log.debug("Returning from getAllLocations for clientId: {} with response: {}",
                 clientId, locations);
-        return LocationResponse.getResponseEntityFrom(locations);
+        return LocationResponse.getResponseEntityFrom(locations, storeService);
     }
 
 }
