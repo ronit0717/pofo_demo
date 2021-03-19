@@ -34,9 +34,15 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                     storeOrderRequest.getCartId(), clientId);
             throw new ProcessException("StoreOrder creation", "StoreOrder already exists with same name");
         }
+        Optional<StoreOrder> optionalStoreOrderSlug = storeOrderRepository.findByOrderSlugAndClientId(
+                storeOrderRequest.getOrderSlug(), clientId);
+        if (optionalStoreOrderSlug.isPresent()) {
+            log.error("StoreOrder already exists with orderSlug: {} for clientId: {}",
+                    storeOrderRequest.getOrderSlug(), clientId);
+            throw new ProcessException("StoreOrder creation", "StoreOrder already exists with same order slug");
+        }
         StoreOrder storeOrder = storeOrderRequest.from(clientId);
         storeOrder = storeOrderRepository.save(storeOrder);
-        //TODO: Generate Order Slug Here
         log.debug("Returning from createStoreOrder with response: {}, for clientId: {}", storeOrder, clientId);
         return StoreOrderResponse.from(storeOrder);
     }

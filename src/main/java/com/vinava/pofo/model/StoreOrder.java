@@ -37,6 +37,7 @@ public class StoreOrder {
     @Column(nullable = false)
     private long cartId;
 
+    @Column(nullable = false)
     private String orderSlug;
 
     @Column(nullable = false)

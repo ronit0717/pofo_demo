@@ -5,6 +5,7 @@ import com.vinava.pofo.model.StoreOrder;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -23,6 +24,9 @@ public class StoreOrderRequest {
     @NotNull
     private OrderType orderType;
 
+    @NotBlank
+    private String orderSlug;
+
     public StoreOrder from(long clientId) {
         return StoreOrder.builder()
                 .clientId(clientId)
@@ -30,6 +34,7 @@ public class StoreOrderRequest {
                 .cartId(this.cartId)
                 .userId(this.userId)
                 .orderType(this.orderType)
+                .orderSlug(this.orderSlug)
                 .build();
     }
 
