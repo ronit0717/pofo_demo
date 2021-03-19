@@ -32,7 +32,7 @@ public class BrandServiceImpl implements BrandService {
         if (optionalBrand.isPresent()) {
             log.error("Brand already exists with name: {} for clientId: {}",
                     brandRequest.getName(), clientId);
-            throw new ProcessException("Brand creation", "Brand already exists in this brand with same name");
+            throw new ProcessException("Brand creation", "Brand already exists with same name");
         }
         Brand brand = brandRequest.from(clientId);
         brand = brandRepository.save(brand);

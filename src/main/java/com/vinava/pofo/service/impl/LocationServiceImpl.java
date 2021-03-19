@@ -32,7 +32,7 @@ public class LocationServiceImpl implements LocationService {
         if (optionalLocation.isPresent()) {
             log.error("Location already exists with name: {} for clientId: {}",
                     locationRequest.getName(), clientId);
-            throw new ProcessException("Location creation", "Location already exists in this location with same name");
+            throw new ProcessException("Location creation", "Location already exists with same name");
         }
         Location location = locationRequest.from(clientId);
         location = locationRepository.save(location);

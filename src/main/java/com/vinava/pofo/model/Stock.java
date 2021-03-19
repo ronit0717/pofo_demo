@@ -31,11 +31,20 @@ public class Stock {
     private long clientId;
 
     @Column(nullable = false)
+    private long productId;
+
+    @Column(nullable = false)
     private long storeId;
 
     private BigDecimal price;
 
     private BigDecimal discountPercentage;
+
+    private Integer quantity;
+
+    private Integer refillLevel;
+
+    private boolean forSale;
 
     @Column(nullable = false, updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
