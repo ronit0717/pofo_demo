@@ -2,6 +2,7 @@ package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.vinava.pofo.enumeration.ProductPricingType;
+import com.vinava.pofo.enumeration.QuantityType;
 import com.vinava.pofo.model.embed.ProductAttribute;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,10 +38,13 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    private long productCategoryId;
+    private Long productCategoryId;
 
     @Enumerated(value = EnumType.STRING)
     private ProductPricingType productPricingType;
+
+    @Enumerated(value = EnumType.STRING)
+    private QuantityType quantityType;
 
     private BigDecimal price;
 

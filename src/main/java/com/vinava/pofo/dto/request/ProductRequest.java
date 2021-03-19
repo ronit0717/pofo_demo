@@ -1,6 +1,7 @@
 package com.vinava.pofo.dto.request;
 
 import com.vinava.pofo.enumeration.ProductPricingType;
+import com.vinava.pofo.enumeration.QuantityType;
 import com.vinava.pofo.model.Product;
 import com.vinava.pofo.model.embed.ProductAttribute;
 import lombok.Builder;
@@ -26,6 +27,9 @@ public class ProductRequest {
     private ProductPricingType productPricingType;
 
     @NotNull
+    private QuantityType quantityType;
+
+    @NotNull
     private BigDecimal price;
 
     @NotNull
@@ -40,7 +44,8 @@ public class ProductRequest {
     public Product from(long clientId) {
         return Product.builder()
                 .clientId(clientId)
-                .productCategoryId(getProductCategoryId())
+                .productCategoryId(this.productCategoryId)
+                .quantityType(this.getQuantityType())
                 .name((this.name))
                 .productPricingType(this.productPricingType)
                 .price(this.price)
@@ -49,13 +54,6 @@ public class ProductRequest {
                 .description(this.description)
                 .productAttributes(this.productAttributes)
                 .build();
-    }
-
-    public long getProductCategoryId() {
-        if (this.productCategoryId == null) {
-            return 0L;
-        }
-        return this.productCategoryId;
     }
 
 }

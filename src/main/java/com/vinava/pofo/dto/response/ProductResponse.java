@@ -1,6 +1,7 @@
 package com.vinava.pofo.dto.response;
 
 import com.vinava.pofo.enumeration.ProductPricingType;
+import com.vinava.pofo.enumeration.QuantityType;
 import com.vinava.pofo.model.Product;
 import com.vinava.pofo.model.embed.ProductAttribute;
 import com.vinava.pofo.util.ComputationUtil;
@@ -27,6 +28,7 @@ public class ProductResponse {
     private BigDecimal discountPercentage;
     private BigDecimal sellingPrice;
     private Set<String> productImages;
+    private QuantityType quantityType;
     private Set<ProductAttribute> productAttributes;
     private String description;
     private Date createdOn;
@@ -39,6 +41,7 @@ public class ProductResponse {
                 .name(product.getName())
                 .productCategoryId(product.getProductCategoryId())
                 .price(product.getPrice())
+                .quantityType(product.getQuantityType())
                 .discountPercentage(product.getDiscountPercentage())
                 .sellingPrice(ComputationUtil.getDiscountedPrice(product.getPrice(), product.getDiscountPercentage()))
                 .productPricingType(product.getProductPricingType())
