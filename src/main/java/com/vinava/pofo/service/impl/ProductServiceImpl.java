@@ -2,10 +2,13 @@ package com.vinava.pofo.service.impl;
 
 import com.vinava.pofo.dao.ProductRepository;
 import com.vinava.pofo.dto.request.ProductRequest;
+import com.vinava.pofo.dto.response.BrandResponse;
 import com.vinava.pofo.dto.response.CategoryResponse;
 import com.vinava.pofo.dto.response.ProductResponse;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.Product;
+import com.vinava.pofo.service.BrandService;
+import com.vinava.pofo.service.CategoryService;
 import com.vinava.pofo.service.ProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +29,32 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Autowired
-    CategoryServiceImpl categoryService;
+    CategoryService categoryService;
+
+    @Autowired
+    BrandService brandService;
 
     @Override
     public ProductResponse createProduct(ProductRequest productRequest, long clientId) {
         log.debug("Starting createProduct with request: {}, for clientId: {}", productRequest, clientId);
-        Optional<Product> optionalProduct = productRepository.findByProductCategoryIdAndNameAndClientId(
-                productRequest.getProductCategoryId(), productRequest.getName(), clientId);
+        Optional<Product> optionalProduct = productRepository.findByCategoryIdAndBrandIdAndNameAndClientId(
+                productRequest.getCategoryId(), productRequest.getBrandId(), productRequest.getName(), clientId);
         if (optionalProduct.isPresent()) {
             log.error("Product already exists with name: {}, and productCategoryId: {} for clientId: {}",
-                    productRequest.getName(), productRequest.getProductCategoryId(), clientId);
+                    productRequest.getName(), productRequest.getCategoryId(), clientId);
             throw new ProcessException("Product creation", "Product already exists in this category with same name");
         }
-        if (productRequest.getProductCategoryId() != 0L) {
-            CategoryResponse categoryResponse = categoryService.getById(productRequest.getProductCategoryId(), clientId);
+        if (productRequest.getCategoryId() != null) {
+            CategoryResponse categoryResponse = categoryService.getById(productRequest.getCategoryId(), clientId);
             if (categoryResponse == null) {
-                log.error("Category not found with id: {}, clientId: {}", productRequest.getProductCategoryId(), clientId);
+                log.error("Category not found with id: {}, clientId: {}", productRequest.getCategoryId(), clientId);
+                throw new ProcessException("Create product", "Invalid product category ID");
+            }
+        }
+        if (productRequest.getBrandId() != null) {
+            BrandResponse brandResponse = brandService.getBrandById(productRequest.getBrandId(), clientId);
+            if (brandResponse == null) {
+                log.error("Category not found with id: {}, clientId: {}", productRequest.getCategoryId(), clientId);
                 throw new ProcessException("Create product", "Invalid product category ID");
             }
         }

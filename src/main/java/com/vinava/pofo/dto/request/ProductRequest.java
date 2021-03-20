@@ -17,7 +17,9 @@ import java.util.Set;
 @Builder
 public class ProductRequest {
 
-    private Long productCategoryId;
+    private Long categoryId;
+
+    private Long brandId;
 
     @NotBlank
     @Size(max = 200)
@@ -44,7 +46,8 @@ public class ProductRequest {
     public Product from(long clientId) {
         return Product.builder()
                 .clientId(clientId)
-                .productCategoryId(this.productCategoryId)
+                .categoryId(this.getCategoryId())
+                .brandId(this.getBrandId())
                 .quantityType(this.getQuantityType())
                 .name((this.name))
                 .productPricingType(this.productPricingType)
@@ -54,6 +57,20 @@ public class ProductRequest {
                 .description(this.description)
                 .productAttributes(this.productAttributes)
                 .build();
+    }
+
+    public Long getCategoryId() {
+        if (this.categoryId != null && this.categoryId != 0L) {
+            return this.categoryId;
+        }
+        return null;
+    }
+
+    public Long getBrandId() {
+        if (this.brandId != null && this.brandId != 0L) {
+            return this.brandId;
+        }
+        return null;
     }
 
 }

@@ -38,7 +38,9 @@ public class Product {
     @Column(nullable = false, length = 200)
     private String name;
 
-    private Long productCategoryId;
+    private Long categoryId;
+
+    private Long brandId;
 
     @Enumerated(value = EnumType.STRING)
     private ProductPricingType productPricingType;
@@ -49,8 +51,6 @@ public class Product {
     private BigDecimal price;
 
     private BigDecimal discountPercentage;
-
-    private Long brandId;
 
     @ElementCollection
     @CollectionTable(name = "product_images", joinColumns = @JoinColumn(name = "product_id"))

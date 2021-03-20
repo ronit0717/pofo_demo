@@ -22,11 +22,11 @@ public class ProductResponse {
     private long id;
     private long clientId;
     private String name;
-    private Long productCategoryId;
+    private Long categoryId;
+    private Long brandId;
     private ProductPricingType productPricingType;
     private BigDecimal price;
     private BigDecimal discountPercentage;
-    private BigDecimal sellingPrice;
     private Set<String> productImages;
     private QuantityType quantityType;
     private Set<ProductAttribute> productAttributes;
@@ -39,11 +39,11 @@ public class ProductResponse {
                 .id(product.getId())
                 .clientId(product.getClientId())
                 .name(product.getName())
-                .productCategoryId(product.getProductCategoryId())
+                .categoryId(product.getCategoryId())
+                .brandId(product.getBrandId())
                 .price(product.getPrice())
                 .quantityType(product.getQuantityType())
                 .discountPercentage(product.getDiscountPercentage())
-                .sellingPrice(ComputationUtil.getDiscountedPrice(product.getPrice(), product.getDiscountPercentage()))
                 .productPricingType(product.getProductPricingType())
                 .productImages(product.getProductImages())
                 .productAttributes(product.getProductAttributes())
