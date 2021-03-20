@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> optionalProduct = productRepository.findByCategoryIdAndBrandIdAndNameAndClientId(
                 productRequest.getCategoryId(), productRequest.getBrandId(), productRequest.getName(), clientId);
         if (optionalProduct.isPresent()) {
-            log.error("Product already exists with name: {}, and productCategoryId: {} for clientId: {}",
+            log.error("Product already exists with name: {}, and categoryId: {} for clientId: {}",
                     productRequest.getName(), productRequest.getCategoryId(), clientId);
             throw new ProcessException("Product creation", "Product already exists in this category with same name");
         }
@@ -116,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
         List<Product> products = (categoryId == null || categoryId == 0L) ?
                   productRepository.findAllByClientId(clientId, pageable)
-                : productRepository.findAllByClientIdAndProductCategoryId(clientId, categoryId, pageable);
+                : productRepository.findAllByClientIdAndCategoryId(clientId, categoryId, pageable);
         log.debug("Returning from getAllProducts for clientId: {}, productCategoryId: {} with response: {}",
                 clientId, categoryId, products);
         return ProductResponse.getResponseEntityFrom(products);
