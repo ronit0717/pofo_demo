@@ -37,8 +37,17 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponse createProduct(ProductRequest productRequest, long clientId) {
         log.debug("Starting createProduct with request: {}, for clientId: {}", productRequest, clientId);
-        Optional<Product> optionalProduct = productRepository.findByCategoryIdAndBrandIdAndNameAndClientId(
-                productRequest.getCategoryId(), productRequest.getBrandId(), productRequest.getName(), clientId);
+        Optional<Product> optionalProduct = Optional.empty();
+        if (productRequest.getCategoryId() != null && productRequest.getBrandId() != null) {
+            optionalProduct = productRepository.findByCategoryIdAndBrandIdAndNameAndClientId(
+                    productRequest.getCategoryId(), productRequest.getBrandId(), productRequest.getName(), clientId);
+        } else if (productRequest.getCategoryId() != null) {
+            optionalProduct = productRepository.findByCategoryIdAndNameAndClientId(
+                    productRequest.getCategoryId(), productRequest.getName(), clientId);
+        } else if (productRequest.getBrandId() != null) {
+            optionalProduct = productRepository.findByCategoryIdAndNameAndClientId(
+                    productRequest.getBrandId(), productRequest.getName(), clientId);
+        }
         if (optionalProduct.isPresent()) {
             log.error("Product already exists with name: {}, and categoryId: {} for clientId: {}",
                     productRequest.getName(), productRequest.getCategoryId(), clientId);

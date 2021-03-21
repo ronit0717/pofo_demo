@@ -31,10 +31,8 @@ public class ProductRequest {
     @NotNull
     private QuantityType quantityType;
 
-    @NotNull
     private BigDecimal price;
 
-    @NotNull
     private BigDecimal discountPercentage;
 
     private Set<String> productImages;
