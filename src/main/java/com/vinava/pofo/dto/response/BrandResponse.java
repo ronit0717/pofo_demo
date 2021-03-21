@@ -25,6 +25,7 @@ public class BrandResponse {
 
     public static BrandResponse from(Brand brand) {
         return BrandResponse.builder()
+                .id(brand.getId())
                 .clientId(brand.getClientId())
                 .name(brand.getName())
                 .description(brand.getDescription())
