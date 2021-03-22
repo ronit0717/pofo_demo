@@ -11,6 +11,7 @@ public interface StockService {
     StockResponse updateStock(StockRequest StockRequest, long id, long clientId);
     boolean deleteStock(long id, long clientId);
     StockResponse getStockById(long id, long clientId);
-    ResponseEntity<List<StockResponse>> getAllStocks(long clientId, Integer pageNumber,
+    StockResponse getStockByStoreIdAndProductId(long storeId, long producyId, long clientId);
+    ResponseEntity<List<StockResponse>> getAllStocks(long clientId, Integer pageNumber, long storeId,
                                                      Integer pageSize, String sortBy, String order);
 }

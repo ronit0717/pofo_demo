@@ -90,15 +90,28 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
-    public ResponseEntity<List<StockResponse>> getAllStocks(long clientId, Integer pageNumber,
+    public StockResponse getStockByStoreIdAndProductId(long storeId, long productId, long clientId) {
+        log.debug("Fetching stock with storeId: {}, productId: {} for clientId: {}", storeId, productId, clientId);
+        Optional<Stock> optionalStock = stockRepository.findByProductIdAndStoreIdAndClientId(productId, storeId, clientId);
+        if (!optionalStock.isPresent()) {
+            log.error("Stock not present with storeId: {}, productId: {} and clientId: {}", storeId, productId, clientId);
+            return null;
+        }
+        Stock stock = optionalStock.get();
+        log.debug("Fetched stock with storeId: {}, productId: {} and clientId: {}. Response: {}", storeId, productId, clientId, stock);
+        return StockResponse.from(stock, productService);
+    }
+
+    @Override
+    public ResponseEntity<List<StockResponse>> getAllStocks(long clientId, Integer pageNumber, long storeId,
                                                             Integer pageSize, String sortBy, String order) {
         log.debug("Starting getAllStocks with pageNumber: {}, pageSize: {}, sortBy: {}, order: {} " +
-                ", clientId: {}", pageNumber, pageSize, sortBy, order, clientId);
+                "storeId: {}, clientId: {}", pageNumber, pageSize, sortBy, order, storeId, clientId);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
-        List<Stock> stocks = stockRepository.findAllByClientId(clientId, pageable);
-        log.debug("Returning from getAllStocks for clientId: {} with response: {}",
-                clientId, stocks);
+        List<Stock> stocks = stockRepository.findAllByStoreIdAndClientId(storeId, clientId, pageable);
+        log.debug("Returning from getAllStocks for storeId: {}, clientId: {} with response: {}",
+                storeId, clientId, stocks);
         return StockResponse.getResponseEntityFrom(stocks, productService);
     }
 

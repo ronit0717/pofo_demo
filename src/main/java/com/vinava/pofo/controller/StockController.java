@@ -43,13 +43,21 @@ public class StockController {
         return stockService.getStockById(id, clientId);
     }
 
+    @GetMapping("store")
+    private StockResponse getStockById(@RequestParam(value = "_store_id", defaultValue = "0") long storeId,
+                                       @RequestParam(value = "_productId_id", defaultValue = "0") long productId,
+                                       @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
+        return stockService.getStockByStoreIdAndProductId(storeId, productId, clientId);
+    }
+
     @GetMapping()
-    public ResponseEntity<List<StockResponse>> getAllBrands(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
+    public ResponseEntity<List<StockResponse>> getAllStocks(@RequestParam(value = "_page_number", defaultValue = "0") Integer pageNumber,
                                                             @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                             @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                             @RequestParam(value = "_order", defaultValue = "DESC") String order,
+                                                            @RequestParam(value = "_store_id", defaultValue = "0") long storeId,
                                                             @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return stockService.getAllStocks(clientId, pageNumber, pageSize, sortBy, order);
+        return stockService.getAllStocks(clientId, pageNumber, storeId, pageSize, sortBy, order);
     }
 
 }
