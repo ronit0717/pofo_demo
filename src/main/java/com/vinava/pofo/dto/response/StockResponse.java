@@ -1,6 +1,7 @@
 package com.vinava.pofo.dto.response;
 
 import com.vinava.pofo.model.Stock;
+import com.vinava.pofo.service.ProductService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class StockResponse {
     private long id;
     private long clientId;
     private long storeId;
+    private ProductResponse product;
     private long productId;
     private BigDecimal price;
     private BigDecimal discountPercentage;
@@ -27,13 +29,15 @@ public class StockResponse {
     private Date createdOn;
     private Date updatedOn;
 
-    public static StockResponse from(Stock stock) {
+    public static StockResponse from(Stock stock, ProductService productService) {
+        ProductResponse productResponse = productService.getProductById(stock.getId(), stock.getClientId());
         return StockResponse.builder()
                 .id(stock.getId())
                 .clientId(stock.getClientId())
                 .productId(stock.getProductId())
                 .storeId(stock.getStoreId())
                 .price(stock.getPrice())
+                .product(productResponse)
                 .discountPercentage(stock.getDiscountPercentage())
                 .quantity(stock.getQuantity())
                 .refillLevel(stock.getRefillLevel())
@@ -42,17 +46,17 @@ public class StockResponse {
                 .build();
     }
 
-    private static List<StockResponse> from(List<Stock> products) {
+    private static List<StockResponse> from(List<Stock> products, ProductService productService) {
         List<StockResponse> productResponses = new LinkedList<>();
         for (Stock product: products) {
-            productResponses.add(from(product));
+            productResponses.add(from(product, productService));
         }
         return productResponses;
     }
 
-    public static ResponseEntity<List<StockResponse>> getResponseEntityFrom(List<Stock> stocks) {
+    public static ResponseEntity<List<StockResponse>> getResponseEntityFrom(List<Stock> stocks, ProductService productService) {
         try {
-            List<StockResponse> stockResponses = from(stocks);
+            List<StockResponse> stockResponses = from(stocks, productService);
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Total-Count", String.valueOf(stockResponses.size()));
             headers.add("Access-Control-Expose-Headers", "X-Total-Count");
