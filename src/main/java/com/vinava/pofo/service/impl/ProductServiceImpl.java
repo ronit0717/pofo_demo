@@ -70,7 +70,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRequest.from(clientId);
         product = productRepository.save(product);
         log.debug("Returning from createProduct with response: {}, for clientId: {}", product, clientId);
-        return ProductResponse.from(product);
+        return ProductResponse.from(product, categoryService, brandService);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         product.setId(id);
         product = productRepository.save(product);
         log.debug("Updated product with id: {} and clientId: {}. Response: {}", id, clientId, product);
-        return ProductResponse.from(product);
+        return ProductResponse.from(product, categoryService, brandService);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product = optionalProduct.get();
         log.debug("Fetched product with id: {} and clientId: {}. Response: {}", id, clientId, product);
-        return ProductResponse.from(product);
+        return ProductResponse.from(product, categoryService, brandService);
     }
 
     @Override
@@ -128,7 +128,7 @@ public class ProductServiceImpl implements ProductService {
                 : productRepository.findAllByClientIdAndCategoryId(clientId, categoryId, pageable);
         log.debug("Returning from getAllProducts for clientId: {}, productCategoryId: {} with response: {}",
                 clientId, categoryId, products);
-        return ProductResponse.getResponseEntityFrom(products);
+        return ProductResponse.getResponseEntityFrom(products, categoryService, brandService);
     }
 
 }

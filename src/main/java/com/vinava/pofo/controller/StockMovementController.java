@@ -21,7 +21,7 @@ public class StockMovementController {
     @PostMapping()
     private StockMovementResponse createStockMovement(@Valid @RequestBody StockMovementRequest request,
                                                       @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return stockMovementService.createStockMovement(request, clientId);
+        return stockMovementService.createStockMovement(request, clientId, true);
     }
 
     @PutMapping("{id}")
@@ -48,8 +48,9 @@ public class StockMovementController {
                                                                     @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                                     @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                                     @RequestParam(value = "_order", defaultValue = "DESC") String order,
+                                                                    @RequestParam(value = "stockId", defaultValue = "0") long stockId,
                                                                     @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return stockMovementService.getAllStockMovements(clientId, pageNumber, pageSize, sortBy, order);
+        return stockMovementService.getAllStockMovements(clientId, stockId, pageNumber, pageSize, sortBy, order);
     }
 
 }

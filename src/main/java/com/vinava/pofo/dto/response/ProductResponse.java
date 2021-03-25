@@ -4,6 +4,8 @@ import com.vinava.pofo.enumeration.ProductPricingType;
 import com.vinava.pofo.enumeration.QuantityType;
 import com.vinava.pofo.model.Product;
 import com.vinava.pofo.model.embed.ProductAttribute;
+import com.vinava.pofo.service.BrandService;
+import com.vinava.pofo.service.CategoryService;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +23,8 @@ public class ProductResponse {
     private long id;
     private long clientId;
     private String name;
-    private Long categoryId;
-    private Long brandId;
+    private CategoryResponse category;
+    private BrandResponse brand;
     private ProductPricingType productPricingType;
     private BigDecimal price;
     private BigDecimal discountPercentage;
@@ -33,13 +35,17 @@ public class ProductResponse {
     private Date createdOn;
     private Date updatedOn;
 
-    public static ProductResponse from(Product product) {
+    public static ProductResponse from(Product product, CategoryService categoryService, BrandService brandService) {
+        CategoryResponse categoryResponse = (product.getCategoryId() == null || product.getCategoryId() == 0L) ? null
+                : categoryService.getById(product.getCategoryId(), product.getClientId());
+        BrandResponse brandResponse = (product.getBrandId() == null || product.getBrandId() == 0L) ? null
+                : brandService.getBrandById(product.getBrandId(), product.getClientId());
         return ProductResponse.builder()
                 .id(product.getId())
                 .clientId(product.getClientId())
                 .name(product.getName())
-                .categoryId(product.getCategoryId())
-                .brandId(product.getBrandId())
+                .category(categoryResponse)
+                .brand(brandResponse)
                 .price(product.getPrice())
                 .quantityType(product.getQuantityType())
                 .discountPercentage(product.getDiscountPercentage())
@@ -52,17 +58,18 @@ public class ProductResponse {
                 .build();
     }
 
-    private static List<ProductResponse> from(List<Product> products) {
+    private static List<ProductResponse> from(List<Product> products, CategoryService categoryService, BrandService brandService) {
         List<ProductResponse> productResponses = new LinkedList<>();
         for (Product product: products) {
-            productResponses.add(from(product));
+            productResponses.add(from(product, categoryService, brandService));
         }
         return productResponses;
     }
 
-    public static ResponseEntity<List<ProductResponse>> getResponseEntityFrom(List<Product> products) {
+    public static ResponseEntity<List<ProductResponse>> getResponseEntityFrom
+            (List<Product> products, CategoryService categoryService, BrandService brandService) {
         try {
-            List<ProductResponse> productResponses = from(products);
+            List<ProductResponse> productResponses = from(products, categoryService, brandService);
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Total-Count", String.valueOf(productResponses.size()));
             headers.add("Access-Control-Expose-Headers", "X-Total-Count");

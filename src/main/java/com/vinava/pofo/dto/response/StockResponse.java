@@ -1,5 +1,6 @@
 package com.vinava.pofo.dto.response;
 
+import com.vinava.pofo.dto.request.StockRequest;
 import com.vinava.pofo.model.Stock;
 import com.vinava.pofo.service.ProductService;
 import lombok.Builder;
@@ -20,7 +21,6 @@ public class StockResponse {
     private long clientId;
     private long storeId;
     private ProductResponse product;
-    private long productId;
     private BigDecimal price;
     private BigDecimal discountPercentage;
     private Integer quantity;
@@ -30,17 +30,17 @@ public class StockResponse {
     private Date updatedOn;
 
     public static StockResponse from(Stock stock, ProductService productService) {
-        ProductResponse productResponse = productService.getProductById(stock.getId(), stock.getClientId());
+        ProductResponse productResponse = productService.getProductById(stock.getProductId(), stock.getClientId());
         return StockResponse.builder()
                 .id(stock.getId())
                 .clientId(stock.getClientId())
-                .productId(stock.getProductId())
                 .storeId(stock.getStoreId())
                 .price(stock.getPrice())
                 .product(productResponse)
                 .discountPercentage(stock.getDiscountPercentage())
                 .quantity(stock.getQuantity())
                 .refillLevel(stock.getRefillLevel())
+                .forSale(stock.isForSale())
                 .createdOn(stock.getCreatedOn())
                 .updatedOn(stock.getUpdatedOn())
                 .build();
@@ -68,6 +68,18 @@ public class StockResponse {
             log.error("In exception block of getResponseEntityFrom for list of stocks: {}", stocks, e);
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    public StockRequest from(Integer newQuantity) {
+        return StockRequest.builder()
+                .storeId(this.storeId)
+                .refillLevel(this.refillLevel)
+                .quantity(newQuantity)
+                .productId(this.product.getId())
+                .discountPercentage(this.discountPercentage)
+                .forSale(this.forSale)
+                .price(this.price)
+                .build();
     }
 
 }

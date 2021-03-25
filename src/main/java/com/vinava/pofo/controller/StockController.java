@@ -45,7 +45,7 @@ public class StockController {
 
     @GetMapping("store")
     private StockResponse getStockById(@RequestParam(value = "store_id", defaultValue = "0") long storeId,
-                                       @RequestParam(value = "productId_id", defaultValue = "0") long productId,
+                                       @RequestParam(value = "product_id", defaultValue = "0") long productId,
                                        @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return stockService.getStockByStoreIdAndProductId(storeId, productId, clientId);
     }

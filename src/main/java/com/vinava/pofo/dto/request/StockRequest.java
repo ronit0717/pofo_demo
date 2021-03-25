@@ -12,10 +12,10 @@ import java.math.BigDecimal;
 @Builder
 public class StockRequest {
 
-    @NotBlank
+    @NotNull
     private Long productId;
 
-    @NotBlank
+    @NotNull
     private Long storeId;
 
     private Integer quantity;

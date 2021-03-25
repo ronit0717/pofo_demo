@@ -1,12 +1,15 @@
 package com.vinava.pofo.service.impl;
 
 import com.vinava.pofo.dao.StockRepository;
+import com.vinava.pofo.dto.request.StockMovementRequest;
 import com.vinava.pofo.dto.request.StockRequest;
 import com.vinava.pofo.dto.response.ProductResponse;
+import com.vinava.pofo.dto.response.StockMovementResponse;
 import com.vinava.pofo.dto.response.StockResponse;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.Stock;
 import com.vinava.pofo.service.ProductService;
+import com.vinava.pofo.service.StockMovementService;
 import com.vinava.pofo.service.StockService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,9 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private StockMovementService stockMovementService;
+
     @Override
     public StockResponse createStock(StockRequest stockRequest, long clientId) {
         log.debug("Starting createStock with request: {}, for clientId: {}", stockRequest, clientId);
@@ -42,6 +48,12 @@ public class StockServiceImpl implements StockService {
         validateProduct(stockRequest.getProductId(), clientId);
         Stock stock = stockRequest.from(clientId);
         stock = stockRepository.save(stock);
+        if (stock.getQuantity() != null) {
+            StockMovementRequest stockMovementRequest = stock.createOpeningStockMovement();
+            log.debug("Creating stock movement record request: {}", stockMovementRequest);
+            StockMovementResponse response = stockMovementService.createStockMovement(stockMovementRequest, clientId, false);
+            log.debug("Stock movement created, response: {}", response);
+        }
         log.debug("Returning from createStock with response: {}, for clientId: {}", stock, clientId);
         return StockResponse.from(stock, productService);
     }

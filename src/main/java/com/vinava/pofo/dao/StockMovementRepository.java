@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface StockMovementRepository extends JpaRepository<StockMovement, Long> {
     Optional<StockMovement> findByIdAndClientId(long id, long clientId);
     List<StockMovement> findAllByClientId(long clientId, Pageable pageable);
+    List<StockMovement> findAllByStockIdAndClientId(long stockId, long clientId, Pageable pageable);
 }

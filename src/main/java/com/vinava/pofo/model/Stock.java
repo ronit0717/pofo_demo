@@ -1,6 +1,9 @@
 package com.vinava.pofo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vinava.pofo.dto.request.StockMovementRequest;
+import com.vinava.pofo.enumeration.StockMovementReferenceType;
+import com.vinava.pofo.enumeration.StockMovementType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -55,5 +58,19 @@ public class Stock {
     @Temporal(TemporalType.TIMESTAMP)
     @LastModifiedDate
     private Date updatedOn;
+
+    public StockMovementRequest createOpeningStockMovement() {
+        if (this.quantity == null) {
+            return null;
+        }
+        return StockMovementRequest.builder()
+                .stockId(this.id)
+                .storeId(this.storeId)
+                .quantity(this.quantity)
+                .stockMovementType(StockMovementType.IN)
+                .stockMovementReferenceType(StockMovementReferenceType.OPENING_STOCK)
+                .comment("New stock created")
+                .build();
+    }
 
 }
