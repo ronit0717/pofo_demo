@@ -4,7 +4,6 @@ import com.vinava.pofo.model.Stock;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
@@ -18,9 +17,9 @@ public class StockRequest {
     @NotNull
     private Long storeId;
 
-    private Integer quantity;
+    private BigDecimal quantity;
 
-    private Integer refillLevel;
+    private BigDecimal refillLevel;
 
     @NotNull
     private BigDecimal price;

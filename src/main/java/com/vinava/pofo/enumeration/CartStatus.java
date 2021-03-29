@@ -2,7 +2,7 @@ package com.vinava.pofo.enumeration;
 
 public enum CartStatus {
     OPEN(1),
-    LOCKED(2),
+    LOCKED(2), //vendor or admin can edit this
     CLOSED(3);
 
     int value;

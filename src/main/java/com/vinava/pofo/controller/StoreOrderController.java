@@ -2,6 +2,7 @@ package com.vinava.pofo.controller;
 
 import com.vinava.pofo.dto.request.StoreOrderRequest;
 import com.vinava.pofo.dto.response.StoreOrderResponse;
+import com.vinava.pofo.enumeration.OrderStatus;
 import com.vinava.pofo.service.StoreOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,13 @@ public class StoreOrderController {
         return storeOrderService.updateStoreOrder(request, id, clientId);
     }
 
+    @PutMapping("status/{orderStatus}/{id}")
+    private StoreOrderResponse updateStoreOrderStatus(@NotNull @PathVariable Long id,
+                                                      @NotNull @PathVariable OrderStatus orderStatus,
+                                                      @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
+        return storeOrderService.updateStoreOrderStatus(id, orderStatus, clientId);
+    }
+
     @DeleteMapping("{id}")
     private boolean deleteStoreOrder(@NotNull @PathVariable(value = "id") Long id,
                                      @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
@@ -48,8 +56,9 @@ public class StoreOrderController {
                                                                       @RequestParam(value = "_page_size", defaultValue = "10") Integer pageSize,
                                                                       @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                                       @RequestParam(value = "_order", defaultValue = "DESC") String order,
+                                                                      @RequestParam(value = "storeId", defaultValue = "0") long storeId,
                                                                       @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return storeOrderService.getAllStoreOrders(clientId, pageNumber, pageSize, sortBy, order);
+        return storeOrderService.getAllStoreOrders(clientId, storeId, pageNumber, pageSize, sortBy, order);
     }
 
 }

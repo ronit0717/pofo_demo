@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,12 +55,12 @@ public class StockMovementServiceImpl implements StockMovementService {
             log.debug("Stock quantity update skipped");
             return;
         }
-        int newQuantity;
+        BigDecimal newQuantity;
         if (StockMovementType.IN.equals(stockMovement.getStockMovementType())) {
-            newQuantity = stockResponse.getQuantity() + stockMovement.getQuantity();
+            newQuantity = stockResponse.getQuantity().add(stockMovement.getQuantity());
         } else {
-            newQuantity = (stockResponse.getQuantity() >= stockMovement.getQuantity()) ?
-                    (stockResponse.getQuantity() - stockMovement.getQuantity()) : 0;
+            newQuantity = (stockResponse.getQuantity().compareTo(stockMovement.getQuantity()) > 0) ?
+                    (stockResponse.getQuantity().subtract(stockMovement.getQuantity())) : BigDecimal.ZERO;
         }
         StockRequest request = stockResponse.from(newQuantity);
         stockResponse = stockService.updateStock(request, stockResponse.getId(), stockMovement.getClientId());

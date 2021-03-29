@@ -43,9 +43,9 @@ public class Stock {
 
     private BigDecimal discountPercentage;
 
-    private Integer quantity;
+    private BigDecimal quantity;
 
-    private Integer refillLevel;
+    private BigDecimal refillLevel;
 
     private boolean forSale;
 

@@ -1,6 +1,7 @@
 package com.vinava.pofo.dto.request;
 
 import com.vinava.pofo.enumeration.OrderType;
+import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.StoreOrder;
 import lombok.Builder;
 import lombok.Data;
@@ -15,8 +16,9 @@ public class StoreOrderRequest {
     @NotNull
     private Long storeId;
 
-    @NotNull
     private Long cartId;
+
+    private CartRequest cartRequest;
 
     @NotNull
     private Long userId;
@@ -36,6 +38,12 @@ public class StoreOrderRequest {
                 .orderType(this.orderType)
                 .orderSlug(this.orderSlug)
                 .build();
+    }
+
+    public void validateStoreOrderRequest() {
+        if ((this.cartId == null || this.cartId == 0L) && this.cartRequest == null) {
+            throw new ProcessException("Order creation", "Both cartId and cartRequest cannot be null");
+        }
     }
 
 }

@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @Data
@@ -20,7 +21,7 @@ public class StockMovementResponse {
     private long clientId;
     private long storeId;
     private long stockId;
-    private int quantity;
+    private BigDecimal quantity;
     private StockMovementType stockMovementType;
     private StockMovementReferenceType stockMovementReferenceType;
     private String referenceId;

@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 public class CartEntity {
 
     @Column(nullable = false)
-    private long productId;
+    private long stockId;
 
     private BigDecimal unitPrice;
 

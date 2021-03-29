@@ -23,8 +23,8 @@ public class StockResponse {
     private ProductResponse product;
     private BigDecimal price;
     private BigDecimal discountPercentage;
-    private Integer quantity;
-    private Integer refillLevel;
+    private BigDecimal quantity;
+    private BigDecimal refillLevel;
     private boolean forSale;
     private Date createdOn;
     private Date updatedOn;
@@ -70,7 +70,7 @@ public class StockResponse {
         }
     }
 
-    public StockRequest from(Integer newQuantity) {
+    public StockRequest from(BigDecimal newQuantity) {
         return StockRequest.builder()
                 .storeId(this.storeId)
                 .refillLevel(this.refillLevel)

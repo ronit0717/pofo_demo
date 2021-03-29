@@ -12,4 +12,5 @@ public interface StoreOrderRepository extends JpaRepository<StoreOrder, Long> {
     Optional<StoreOrder> findByOrderSlugAndClientId(String orderSlug, long clientId);
     Optional<StoreOrder> findByIdAndClientId(long id, long clientId);
     List<StoreOrder> findAllByClientId(long clientId, Pageable pageable);
+    List<StoreOrder> findAllByClientIdAndStoreId(long clientId, long storeId, Pageable pageable);
 }

@@ -6,9 +6,9 @@ import com.vinava.pofo.model.StockMovement;
 import lombok.Builder;
 import lombok.Data;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -21,8 +21,7 @@ public class StockMovementRequest {
     private Long storeId;
 
     @NotNull
-    @Min(1)
-    private Integer quantity;
+    private BigDecimal quantity;
 
     @NotNull
     private StockMovementType stockMovementType;

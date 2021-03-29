@@ -12,6 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -37,7 +38,7 @@ public class StockMovement {
     @Column(nullable = false)
     private long storeId;
 
-    private int quantity;
+    private BigDecimal quantity;
 
     @Enumerated(value = EnumType.STRING)
     private StockMovementType stockMovementType;

@@ -4,6 +4,7 @@ import com.vinava.pofo.enumeration.CartStatus;
 import com.vinava.pofo.enumeration.CategoryType;
 import com.vinava.pofo.model.Cart;
 import com.vinava.pofo.model.embed.CartEntity;
+import com.vinava.pofo.service.StockService;
 import com.vinava.pofo.util.ComputationUtil;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Builder
 @Slf4j
+@Data
 public class CartResponse {
 
     private long id;
@@ -28,9 +30,10 @@ public class CartResponse {
 
     @Data
     @Builder
-    private static class CartEntityResponse {
-        private long productId;
+    public static class CartEntityResponse {
+        private StockResponse stock;
         private BigDecimal unitPrice;
+        private BigDecimal quantity;
         private BigDecimal discountPercentage;
         private BigDecimal taxablePrice;
         private BigDecimal gstPercentage;
@@ -39,17 +42,18 @@ public class CartResponse {
         private CategoryType cartEntityType;
     }
 
-    public static CartResponse from(Cart cart) {
+    public static CartResponse from(Cart cart, StockService stockService) {
         return CartResponse.builder()
                 .id(cart.getId())
                 .clientId(cart.getClientId())
                 .userId(cart.getUserId())
                 .cartStatus(cart.getCartStatus())
-                .cartEntityResponses(getCartEntityResponseSetFrom(cart.getCartEntities()))
+                .cartEntityResponses(getCartEntityResponseSetFrom(cart.getCartEntities(), stockService, cart.getClientId()))
                 .build();
     }
 
-    private static List<CartEntityResponse> getCartEntityResponseSetFrom(List<CartEntity> cartEntities) {
+    private static List<CartEntityResponse> getCartEntityResponseSetFrom
+            (List<CartEntity> cartEntities, StockService stockService, long clientId) {
         List<CartEntityResponse> responseList = new LinkedList<>();
         for (CartEntity cartEntity : cartEntities) {
             BigDecimal unitPrice = cartEntity.getUnitPrice();
@@ -57,8 +61,10 @@ public class CartResponse {
             BigDecimal taxablePrice = ComputationUtil.getDiscountedPrice(unitPrice, discountPercentage);
             BigDecimal finalPrice = ComputationUtil.getFinalAmount(taxablePrice, cartEntity.getGstPercentage());
             BigDecimal tax = finalPrice.subtract(taxablePrice);
+            StockResponse stockResponse = stockService.getStockById(cartEntity.getStockId(), clientId);
             CartEntityResponse cartEntityResponse = CartEntityResponse.builder()
-                    .productId(cartEntity.getProductId())
+                    .stock(stockResponse)
+                    .quantity(cartEntity.getQuantity())
                     .unitPrice(unitPrice)
                     .discountPercentage(discountPercentage)
                     .taxablePrice(taxablePrice)
@@ -72,17 +78,17 @@ public class CartResponse {
         return responseList;
     }
 
-    private static List<CartResponse> from(List<Cart> carts) {
+    private static List<CartResponse> from(List<Cart> carts, StockService stockService) {
         List<CartResponse> cartResponses = new ArrayList<>();
         for (Cart cart: carts) {
-            cartResponses.add(from(cart));
+            cartResponses.add(from(cart, stockService));
         }
         return cartResponses;
     }
 
-    public static ResponseEntity<List<CartResponse>> getResponseEntityFrom(List<Cart> carts) {
+    public static ResponseEntity<List<CartResponse>> getResponseEntityFrom(List<Cart> carts, StockService stockService) {
         try {
-            List<CartResponse> clientResponses = from(carts);
+            List<CartResponse> clientResponses = from(carts, stockService);
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-Total-Count", String.valueOf(clientResponses.size()));
             headers.add("Access-Control-Expose-Headers", "X-Total-Count");

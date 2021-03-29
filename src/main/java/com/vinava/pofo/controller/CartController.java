@@ -44,6 +44,12 @@ public class CartController {
     }
 
     @GetMapping("{id}")
+    private CartResponse getCart(@NotNull @PathVariable(value = "id") Long cartId,
+                                     @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
+        return cartService.getCart(clientId, cartId);
+    }
+
+    @GetMapping("open/{id}")
     private CartResponse getOpenCart(@NotNull @PathVariable(value = "id") Long userId,
                                          @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
         return cartService.getOpenCart(clientId, userId);

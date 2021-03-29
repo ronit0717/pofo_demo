@@ -18,6 +18,9 @@ public class ComputationUtil {
     }
 
     public static boolean isValidPercentage(BigDecimal percentage) {
+        if (percentage == null) {
+            return true;
+        }
         int result = percentage.compareTo(ONE_HUNDRED);
         return (result != 0 && result != 1);
     }

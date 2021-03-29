@@ -4,13 +4,13 @@ import com.vinava.pofo.dao.CartRepository;
 import com.vinava.pofo.dto.request.CartRequest;
 import com.vinava.pofo.dto.request.UpdateCartStatusRequest;
 import com.vinava.pofo.dto.response.CartResponse;
-import com.vinava.pofo.dto.response.ProductResponse;
+import com.vinava.pofo.dto.response.StockResponse;
 import com.vinava.pofo.enumeration.CartStatus;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.Cart;
 import com.vinava.pofo.model.embed.CartEntity;
 import com.vinava.pofo.service.CartService;
-import com.vinava.pofo.service.ProductService;
+import com.vinava.pofo.service.StockService;
 import com.vinava.pofo.util.ComputationUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class CartServiceImpl implements CartService {
     private CartRepository cartRepository;
 
     @Autowired
-    private ProductService productService;
+    private StockService stockService;
 
     @Override
     public CartResponse createCart(long clientId, CartRequest cartRequest) {
@@ -51,7 +51,7 @@ public class CartServiceImpl implements CartService {
         cart.setCartStatus(CartStatus.OPEN);
         cart = cartRepository.save(cart);
         log.debug("Cart created: {}", cart);
-        return CartResponse.from(cart);
+        return CartResponse.from(cart, stockService);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class CartServiceImpl implements CartService {
         cart.setCartStatus(CartStatus.OPEN);
         cart = cartRepository.save(cart);
         log.debug("Cart updated: {}", cart);
-        return CartResponse.from(cart);
+        return CartResponse.from(cart, stockService);
     }
 
     @Override
@@ -93,6 +93,20 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
+    public CartResponse getCart(long clientId, long cartId) {
+        log.debug("Fetching cart with clientId: {}, cartId: {}", clientId, cartId);
+        Optional<Cart> optionalExistingCart =
+                cartRepository.findByClientIdAndId(clientId, cartId);
+        if (!optionalExistingCart.isPresent()) {
+            log.error("No existing cart present for clientId: {}, cartId: {}", clientId, cartId);
+            String errorMessage = String.format("No cart is present for clientId: %s and cartId: %s", clientId, cartId);
+            throw new ProcessException("Cart fetch", errorMessage);
+        }
+        Cart cart = optionalExistingCart.get();
+        return CartResponse.from(cart, stockService);
+    }
+
+    @Override
     public CartResponse getOpenCart(long clientId, long userId) {
         log.debug("Fetching open cart with clientId: {}, userId: {}", clientId, userId);
         Optional<Cart> optionalExistingCart =
@@ -103,7 +117,7 @@ public class CartServiceImpl implements CartService {
             throw new ProcessException("Cart fetch", errorMessage);
         }
         Cart cart = optionalExistingCart.get();
-        return CartResponse.from(cart);
+        return CartResponse.from(cart, stockService);
     }
 
     @Override
@@ -115,7 +129,7 @@ public class CartServiceImpl implements CartService {
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
         List<Cart> carts = cartRepository.findAllByClientId(clientId, pageable);
         log.debug("Returning from getAllCarts for clientId: {} with response: {}", clientId, carts);
-        return CartResponse.getResponseEntityFrom(carts);
+        return CartResponse.getResponseEntityFrom(carts, stockService);
     }
 
     @Override
@@ -138,7 +152,7 @@ public class CartServiceImpl implements CartService {
         cart.setCartStatus(request.getCartStatus());
         cart = cartRepository.save(cart);
         log.debug("Cart status updated: {}", cart);
-        return CartResponse.from(cart);
+        return CartResponse.from(cart, stockService);
     }
 
     private void validateCartEntities(List<CartEntity> cartEntities, long clientId) {
@@ -147,23 +161,23 @@ public class CartServiceImpl implements CartService {
             throw new ProcessException(processName, "Cart entities are empty");
         }
         log.debug("Checking if valid products present in cart entity");
-        ProductResponse productResponse;
+        StockResponse stockResponse;
         for (CartEntity cartEntity : cartEntities) {
             try {
-                productResponse = productService.getProductById(cartEntity.getProductId(), clientId);
+                stockResponse = stockService.getStockById(cartEntity.getStockId(), clientId);
             } catch (Exception e) {
-                log.error("Invalid product id: {} for clientId: {}", cartEntity.getProductId(), clientId);
-                throw new ProcessException(processName, "Invalid product id in cart entity");
+                log.error("Invalid stock id: {} for clientId: {}", cartEntity.getStockId(), clientId);
+                throw new ProcessException(processName, "Invalid stock id in cart entity");
             }
-            log.debug("Valid product fetched: {}", productResponse);
+            log.debug("Valid stock fetched: {}", stockResponse);
             if (ComputationUtil.isValidPercentage(cartEntity.getDiscountPercentage())) {
-                log.error("Invalid discount percentage for productId: {}, clientId: {}", cartEntity.getProductId(), clientId);
+                log.error("Invalid discount percentage for stockId: {}, clientId: {}", cartEntity.getStockId(), clientId);
                 throw new ProcessException(processName, "Invalid discount percentage");
             } else if (ComputationUtil.isValidPercentage(cartEntity.getGstPercentage())) {
-                log.error("Invalid gst percentage for productId: {}, clientId: {}", cartEntity.getProductId(), clientId);
+                log.error("Invalid gst percentage for stockId: {}, clientId: {}", cartEntity.getStockId(), clientId);
                 throw new ProcessException(processName, "Invalid tax percentage");
-            } else if (cartEntity.getQuantity().compareTo(BigDecimal.ZERO) != 1) {
-                log.error("Invalid product quantity for productId: {}, clientId: {}", cartEntity.getProductId(), clientId);
+            } else if (cartEntity.getQuantity() == null || cartEntity.getQuantity().compareTo(BigDecimal.ZERO) != 1) {
+                log.error("Invalid quantity for stockId: {}, clientId: {}", cartEntity.getStockId(), clientId);
                 throw new ProcessException(processName, "Invalid quantity mention, quantity should be > 0");
             }
         }
