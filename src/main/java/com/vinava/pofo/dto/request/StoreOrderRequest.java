@@ -1,5 +1,6 @@
 package com.vinava.pofo.dto.request;
 
+import com.vinava.pofo.dto.response.CartResponse;
 import com.vinava.pofo.enumeration.OrderType;
 import com.vinava.pofo.exception.ProcessException;
 import com.vinava.pofo.model.StoreOrder;
@@ -20,7 +21,6 @@ public class StoreOrderRequest {
 
     private CartRequest cartRequest;
 
-    @NotNull
     private Long userId;
 
     @NotNull
@@ -29,11 +29,11 @@ public class StoreOrderRequest {
     @NotBlank
     private String orderSlug;
 
-    public StoreOrder from(long clientId) {
+    public StoreOrder from(long clientId, CartResponse cartResponse) {
         return StoreOrder.builder()
                 .clientId(clientId)
                 .storeId((this.storeId))
-                .cartId(this.cartId)
+                .cartId(cartResponse == null ? this.cartId : cartResponse.getId())
                 .userId(this.userId)
                 .orderType(this.orderType)
                 .orderSlug(this.orderSlug)

@@ -40,8 +40,7 @@ public class StoreOrder {
     @Column(nullable = false)
     private String orderSlug;
 
-    @Column(nullable = false)
-    private long userId;
+    private Long userId;
 
     @Enumerated(value = EnumType.STRING)
     private OrderType orderType;

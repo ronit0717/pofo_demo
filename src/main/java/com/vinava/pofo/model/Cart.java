@@ -30,8 +30,7 @@ public class Cart {
     @Column(nullable = false)
     private long clientId;
 
-    @Column(nullable = false)
-    private long userId;
+    private Long userId;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "cart_entities", joinColumns = @JoinColumn(name = "cart_id"))

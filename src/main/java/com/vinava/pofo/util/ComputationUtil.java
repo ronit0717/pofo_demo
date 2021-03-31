@@ -13,7 +13,8 @@ public class ComputationUtil {
     }
 
     public static BigDecimal getFinalAmount(BigDecimal taxablePrice, BigDecimal taxPercentage) {
-        BigDecimal tax = (taxablePrice.multiply(taxPercentage)).divide(ONE_HUNDRED, RoundingMode.CEILING);
+        BigDecimal tax = taxPercentage == null ? BigDecimal.ZERO
+                : (taxablePrice.multiply(taxPercentage)).divide(ONE_HUNDRED, RoundingMode.CEILING);
         return taxablePrice.add(tax);
     }
 
@@ -22,7 +23,7 @@ public class ComputationUtil {
             return true;
         }
         int result = percentage.compareTo(ONE_HUNDRED);
-        return (result != 0 && result != 1);
+        return result <= 0;
     }
 
 }

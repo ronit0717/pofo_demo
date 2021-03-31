@@ -24,7 +24,7 @@ public class CartResponse {
 
     private long id;
     private long clientId;
-    private long userId;
+    private Long userId;
     private CartStatus cartStatus;
     private List<CartEntityResponse> cartEntityResponses;
 

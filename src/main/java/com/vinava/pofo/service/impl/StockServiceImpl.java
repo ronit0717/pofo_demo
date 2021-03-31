@@ -116,14 +116,16 @@ public class StockServiceImpl implements StockService {
 
     @Override
     public ResponseEntity<List<StockResponse>> getAllStocks(long clientId, Integer pageNumber, long storeId,
-                                                            Integer pageSize, String sortBy, String order) {
+                                                            boolean forSale, Integer pageSize, String sortBy, String order) {
         log.debug("Starting getAllStocks with pageNumber: {}, pageSize: {}, sortBy: {}, order: {} " +
-                "storeId: {}, clientId: {}", pageNumber, pageSize, sortBy, order, storeId, clientId);
+                "storeId: {}, clientId: {}, forSale: {}", pageNumber, pageSize, sortBy, order, storeId, clientId, forSale);
         Sort.Direction direction = (order.equals("ASC")) ? Sort.Direction.ASC : Sort.Direction.DESC;
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by(direction, sortBy));
-        List<Stock> stocks = stockRepository.findAllByStoreIdAndClientId(storeId, clientId, pageable);
-        log.debug("Returning from getAllStocks for storeId: {}, clientId: {} with response: {}",
-                storeId, clientId, stocks);
+        List<Stock> stocks = forSale ?
+                stockRepository.findAllByStoreIdAndClientIdAndForSale(storeId, clientId, true, pageable) :
+                stockRepository.findAllByStoreIdAndClientId(storeId, clientId, pageable);
+        log.debug("Returning from getAllStocks for storeId: {}, clientId: {}, forSale: {} with response: {}",
+                storeId, clientId, forSale, stocks);
         return StockResponse.getResponseEntityFrom(stocks, productService);
     }
 

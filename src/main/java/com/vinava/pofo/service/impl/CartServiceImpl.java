@@ -37,14 +37,16 @@ public class CartServiceImpl implements CartService {
     @Override
     public CartResponse createCart(long clientId, CartRequest cartRequest) {
         log.debug("Creating new cart with cart request: {}", cartRequest);
-        Optional<Cart> optionalExistingCart =
-                cartRepository.findByClientIdAndUserIdAndCartStatus(clientId, cartRequest.getUserId(), CartStatus.OPEN);
-        if (optionalExistingCart.isPresent()) {
-            log.error("Existing open cart present for clientId: {}, userId: {}, cart: {}",
-                    clientId, cartRequest.getUserId(), optionalExistingCart.get());
-            String errorMessage = String.format("Open cart is present for clientId: %s and userId: %s",
-                    clientId, cartRequest.getUserId());
-            throw new ProcessException("Cart creation", errorMessage);
+        if (cartRequest.getUserId() != null) {
+            Optional<Cart> optionalExistingCart =
+                    cartRepository.findByClientIdAndUserIdAndCartStatus(clientId, cartRequest.getUserId(), CartStatus.OPEN);
+            if (optionalExistingCart.isPresent()) {
+                log.error("Existing open cart present for clientId: {}, userId: {}, cart: {}",
+                        clientId, cartRequest.getUserId(), optionalExistingCart.get());
+                String errorMessage = String.format("Open cart is present for clientId: %s and userId: %s",
+                        clientId, cartRequest.getUserId());
+                throw new ProcessException("Cart creation", errorMessage);
+            }
         }
         validateCartEntities(cartRequest.getCartEntities(), clientId);
         Cart cart = cartRequest.from(clientId);
@@ -170,13 +172,13 @@ public class CartServiceImpl implements CartService {
                 throw new ProcessException(processName, "Invalid stock id in cart entity");
             }
             log.debug("Valid stock fetched: {}", stockResponse);
-            if (ComputationUtil.isValidPercentage(cartEntity.getDiscountPercentage())) {
+            if (!ComputationUtil.isValidPercentage(cartEntity.getDiscountPercentage())) {
                 log.error("Invalid discount percentage for stockId: {}, clientId: {}", cartEntity.getStockId(), clientId);
                 throw new ProcessException(processName, "Invalid discount percentage");
-            } else if (ComputationUtil.isValidPercentage(cartEntity.getGstPercentage())) {
+            } else if (!ComputationUtil.isValidPercentage(cartEntity.getGstPercentage())) {
                 log.error("Invalid gst percentage for stockId: {}, clientId: {}", cartEntity.getStockId(), clientId);
                 throw new ProcessException(processName, "Invalid tax percentage");
-            } else if (cartEntity.getQuantity() == null || cartEntity.getQuantity().compareTo(BigDecimal.ZERO) != 1) {
+            } else if (cartEntity.getQuantity() == null || cartEntity.getQuantity().compareTo(BigDecimal.ZERO) < 1) {
                 log.error("Invalid quantity for stockId: {}, clientId: {}", cartEntity.getStockId(), clientId);
                 throw new ProcessException(processName, "Invalid quantity mention, quantity should be > 0");
             }

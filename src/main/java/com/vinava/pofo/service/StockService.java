@@ -13,5 +13,5 @@ public interface StockService {
     StockResponse getStockById(long id, long clientId);
     StockResponse getStockByStoreIdAndProductId(long storeId, long producyId, long clientId);
     ResponseEntity<List<StockResponse>> getAllStocks(long clientId, Integer pageNumber, long storeId,
-                                                     Integer pageSize, String sortBy, String order);
+                                                     boolean forSale, Integer pageSize, String sortBy, String order);
 }

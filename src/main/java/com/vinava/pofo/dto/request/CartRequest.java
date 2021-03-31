@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 public class CartRequest {
 
-    @NotNull
     private Long userId;
 
     @NotNull

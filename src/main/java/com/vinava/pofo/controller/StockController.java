@@ -56,8 +56,9 @@ public class StockController {
                                                             @RequestParam(value = "_sort_by", defaultValue = "id") String sortBy,
                                                             @RequestParam(value = "_order", defaultValue = "DESC") String order,
                                                             @RequestParam(value = "store_id", defaultValue = "0") long storeId,
+                                                            @RequestParam(value = "for_sale", defaultValue = "true") boolean forSale,
                                                             @RequestHeader(value = "X-Pofo-Client-Id") long clientId) {
-        return stockService.getAllStocks(clientId, pageNumber, storeId, pageSize, sortBy, order);
+        return stockService.getAllStocks(clientId, pageNumber, storeId, forSale, pageSize, sortBy, order);
     }
 
 }

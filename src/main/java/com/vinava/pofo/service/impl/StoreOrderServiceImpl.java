@@ -42,8 +42,11 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         log.debug("Starting createStoreOrder with request: {}, for clientId: {}", storeOrderRequest, clientId);
         storeOrderRequest.validateStoreOrderRequest();
         long cartId;
+        CartResponse cartResponse = null;
+        OrderStatus orderStatus;
         if (storeOrderRequest.getCartId() == null || storeOrderRequest.getCartId() == 0L) {
-            CartResponse cartResponse = cartService.createCart(clientId, storeOrderRequest.getCartRequest());
+            cartResponse = cartService.createCart(clientId, storeOrderRequest.getCartRequest());
+            orderStatus = OrderStatus.PROCESSING;
         } else {
             cartId = storeOrderRequest.getCartId();
             Optional<StoreOrder> optionalStoreOrder = storeOrderRepository.findByCartIdAndClientId(
@@ -53,6 +56,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                         storeOrderRequest.getCartId(), clientId);
                 throw new ProcessException("StoreOrder creation", "StoreOrder already exists with same name");
             }
+            orderStatus = OrderStatus.RECEIVED;
         }
         Optional<StoreOrder> optionalStoreOrderSlug = storeOrderRepository.findByOrderSlugAndClientId(
                 storeOrderRequest.getOrderSlug(), clientId);
@@ -61,10 +65,33 @@ public class StoreOrderServiceImpl implements StoreOrderService {
                     storeOrderRequest.getOrderSlug(), clientId);
             throw new ProcessException("StoreOrder creation", "StoreOrder already exists with same order slug");
         }
-        StoreOrder storeOrder = storeOrderRequest.from(clientId);
+        StoreOrder storeOrder = storeOrderRequest.from(clientId, cartResponse);
+        storeOrder.setOrderStatus(orderStatus);
         storeOrder = storeOrderRepository.save(storeOrder);
+        StoreOrderResponse storeOrderResponse = StoreOrderResponse.from(storeOrder, cartService);
+        createStockMovement(storeOrderResponse, false);
         log.debug("Returning from createStoreOrder with response: {}, for clientId: {}", storeOrder, clientId);
-        return StoreOrderResponse.from(storeOrder, cartService);
+        return storeOrderResponse;
+    }
+
+    private void createStockMovement(StoreOrderResponse order, boolean cancelledOrder) {
+        for (CartResponse.CartEntityResponse cartEntityResponse : order.getCart().getCartEntityResponses()) {
+            StockMovementRequest stockMovementRequest = getStockMovementRequest(cartEntityResponse, order, cancelledOrder);
+            stockMovementService.createStockMovement(stockMovementRequest, order.getClientId(), true);
+        }
+    }
+
+    private StockMovementRequest getStockMovementRequest
+            (CartResponse.CartEntityResponse cartEntityResponse, StoreOrderResponse storeOrderResponse, boolean cancelledOrder) {
+        return StockMovementRequest.builder()
+                .quantity(cartEntityResponse.getQuantity())
+                .stockMovementType(cancelledOrder ? StockMovementType.IN : StockMovementType.OUT)
+                .referenceId(storeOrderResponse.getOrderSlug())
+                .comment(cancelledOrder ? "Vendor Order Cancellation" : "Vendor Order")
+                .stockMovementReferenceType(cancelledOrder ? StockMovementReferenceType.ORDER_RETURN : StockMovementReferenceType.ORDER)
+                .storeId(storeOrderResponse.getStoreId())
+                .stockId(cartEntityResponse.getStock().getId())
+                .build();
     }
 
     @Override
@@ -75,7 +102,7 @@ public class StoreOrderServiceImpl implements StoreOrderService {
             log.error("StoreOrder not present with id: {}, and clientId: {}", id, clientId);
             throw new ProcessException("StoreOrder updation", "Invalid storeOrder ID");
         }
-        StoreOrder storeOrder = storeOrderRequest.from(clientId);
+        StoreOrder storeOrder = storeOrderRequest.from(clientId, null);
         storeOrder.setId(id);
         storeOrder = storeOrderRepository.save(storeOrder);
         log.debug("Updated storeOrder with id: {} and clientId: {}. Response: {}", id, clientId, storeOrder);
@@ -95,30 +122,10 @@ public class StoreOrderServiceImpl implements StoreOrderService {
         storeOrder = storeOrderRepository.save(storeOrder);
         StoreOrderResponse storeOrderResponse = StoreOrderResponse.from(storeOrder, cartService);
         if (OrderStatus.CANCELLED.equals(orderStatus)) {
-            createStockMovementForCancelledOrder(storeOrderResponse);
+            createStockMovement(storeOrderResponse, true);
         }
         log.debug("Updated storeOrder with id: {}, orderStatus: {} and clientId: {}. Response: {}", id, orderStatus, clientId, storeOrder);
         return storeOrderResponse;
-    }
-
-    private void createStockMovementForCancelledOrder(StoreOrderResponse order) {
-        for (CartResponse.CartEntityResponse cartEntityResponse : order.getCart().getCartEntityResponses()) {
-            StockMovementRequest stockMovementRequest = getStockMovementRequestForCancelledOrder(cartEntityResponse, order);
-            stockMovementService.createStockMovement(stockMovementRequest, order.getClientId(), true);
-        }
-    }
-
-    private StockMovementRequest getStockMovementRequestForCancelledOrder
-            (CartResponse.CartEntityResponse cartEntityResponse, StoreOrderResponse storeOrderResponse) {
-        return StockMovementRequest.builder()
-                .quantity(cartEntityResponse.getQuantity())
-                .stockMovementType(StockMovementType.IN)
-                .referenceId(storeOrderResponse.getOrderSlug())
-                .comment("Vendor Order Cancellation")
-                .stockMovementReferenceType(StockMovementReferenceType.ORDER_RETURN)
-                .storeId(storeOrderResponse.getStoreId())
-                .stockId(cartEntityResponse.getStock().getId())
-                .build();
     }
 
     @Override

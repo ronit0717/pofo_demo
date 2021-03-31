@@ -20,7 +20,7 @@ public class StoreOrderResponse {
     private long id;
     private long clientId;
     private long storeId;
-    private long userId;
+    private Long userId;
     private String orderSlug;
     private CartResponse cart;
     private OrderType orderType;
